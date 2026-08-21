@@ -487,14 +487,14 @@ P.push(`<section id="s-diag">${head('I','Síntesis','syn','Diagnóstico Ejecutiv
 const lowSat=FAMNAC.filter(f=>f.n<=2&&f.fam!=='otros').slice(0,6);
 P.push(`<section id="s-concl">${head('J','Síntesis','syn','Conclusiones','Síntesis ejecutiva dirigida al Comité Curricular.')}
 <div class="card">
-${insight('blue','🎯',`<p><b>Diferenciación de la denominación.</b> Índice de diferenciación <b>${DIFF}/100</b> a nivel nacional: núcleo conceptual común, pero la fórmula completa es poco frecuente. Frente a especializaciones, la más parecida alcanza <b>${(SIM_ESP[0].comp*100).toFixed(0)}%</b> de similitud combinada; el referente más cercano en general es <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}). Principales referentes: ${SIM_NAC.slice(0,3).map(r=>title(r.inst)).join(', ')}.</p>`)}
+${insight('blue','🎯',`<p><b>Recomendación final.</b>El núcleo conceptual es adecuado y regionalmente poco saturado, pero existe un programa nacional casi homónimo ("Especialización En Diseño De Experiencias Digitales"). Se recomienda ajustar el calificador para elevar la diferenciación —anclando "experiencias" a un vertical o sumando un término emergente— conservando la claridad de mercado.</p>`)}
 ${insight('wine','⚠️',`<p><b>Riesgo principal.</b> Colisión de nombre con "${title(SIM_NAC[0].prog)}" (${title(SIM_NAC[0].inst)}). Dentro del Suroccidente + Eje Cafetero la similitud de nombre también es alta (${(SIM_REG[0]?SIM_REG[0].comp*100:0).toFixed(0)}% con la más cercana), aunque la saturación de oferta regional es baja.</p>`)}
 ${insight('good','🌱',`<p><b>Oferta regional y espacio para la propuesta.</b> Oferta poco densa: ${BENCH.length} especializaciones externas, concentradas en ${geoDist[0]?.label}. Sí existe espacio para la propuesta UAO, por modalidad híbrida y por departamentos sin competencia directa.</p>`)}
 ${insight('gold','🧩',`<p><b>Conceptos saturados y de oportunidad.</b> "${title(FAMNAC[0].fam)}" y "${title(FAMNAC[1].fam)}" concentran la oferta nacional ("digital" es transversal). "Experiencias" ancladas a un vertical y calificadores emergentes son oportunidad; "avanzadas" queda libre pero aporta poco valor diferenciador.</p>`)}
 ${insight('good','🎯',`<p><b>Nichos territoriales.</b> Cauca, Nariño y Risaralda no registran especializaciones del campo → mercados abiertos, especialmente para modalidad híbrida. Fuera de ${geoDist[0]?.label}, la oferta regional es casi nula.</p>`)}
 ${insight('gold','🧩',`<p><b>Familias poco saturadas.</b> ${lowSat.map(f=>title(f.fam)).join(', ')} — conceptos con ≤2 programas nacionales.</p>`)}
 ${insight('blue','🏷️',`<p><b>Diferenciadores disponibles.</b> "Avanzadas" casi no se usa (${CONCEPTS[3].tot}/${DATA_NAC.length}); la fórmula "Diseño de Experiencias Digitales" tiene solo ${comboAll.length} ocurrencia(s) nacional(es). Anclar "experiencias" a un vertical (inmersivas, de servicio, de producto) o sumar un término emergente (IA, inmersivo) eleva la diferenciación sin perder claridad.</p>`)}
-${insight('wine','✅',`<p><b>Recomendación final.</b> ${reco[0]}: ${reco[1]}</p>`)}
+
 </div></section>`);
 
 document.getElementById('wrap').innerHTML=P.join('');
