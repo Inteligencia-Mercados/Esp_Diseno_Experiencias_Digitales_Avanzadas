@@ -120,6 +120,15 @@ tbody tr:hover td{background:#f8fafc}tr.uao-row:hover td{background:#fef9c3}
 .barrow .num{text-align:right;font-weight:700;color:var(--ink)}
 .barrow.uao .label{color:var(--primary);font-weight:700}.barrow.uao .barfill{background:var(--accent)}
 
+.pie-wrap{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.pie{width:150px;height:150px;border-radius:50%;flex:none;position:relative}
+.pie::after{content:"";position:absolute;inset:26px;border-radius:50%;background:var(--surface)}
+.pie-legend{display:flex;flex-direction:column;gap:8px;font-size:12.5px;flex:1;min-width:160px}
+.pie-legend .pl-row{display:flex;align-items:center;gap:8px}
+.pie-legend .pl-dot{width:10px;height:10px;border-radius:50%;flex:none}
+.pie-legend .pl-label{color:var(--ink-soft);flex:1}
+.pie-legend .pl-val{font-weight:700;color:var(--ink)}
+
 .cloud{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px;padding:16px 10px}
 .cloud span{display:inline-flex;align-items:center;white-space:nowrap;line-height:1;color:var(--slate);font-weight:700;
   background:var(--slate-pale);padding:6px 12px;border-radius:20px}
@@ -286,6 +295,11 @@ function esc(s){return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace
 function title(s){return (s||'').toLowerCase().split(' ').map(w=>w?w.charAt(0).toUpperCase()+w.slice(1):w).join(' ');}
 function barlist(entries,color='slate',opt={}){const max=opt.max||Math.max(...entries.map(e=>e.v),1);
   return `<div class="barlist">${entries.map(e=>`<div class="barrow${e.uao?' uao':''}"><span class="label" title="${esc(e.label)}">${esc(e.label)}${e.uao?' ★':''}</span><div class="bartrack"><div class="barfill ${e.color||color}" style="width:${Math.max(2,e.v/max*100).toFixed(1)}%"></div></div><span class="num">${e.disp!=null?e.disp:e.v}</span></div>`).join('')}</div>`;}
+const PIE_COLORS=['#8C0F13','#1d4ed8','#d97706','#475569','#7c3aed','#15803d','#0891b2','#be185d'];
+function pieChart(entries){const total=entries.reduce((a,e)=>a+e.value,0)||1;let acc=0;
+  const stops=entries.map((e,i)=>{const start=acc/total*360;acc+=e.value;const end=acc/total*360;return `${PIE_COLORS[i%PIE_COLORS.length]} ${start.toFixed(2)}deg ${end.toFixed(2)}deg`;}).join(', ');
+  const legend=entries.map((e,i)=>`<div class="pl-row"><span class="pl-dot" style="background:${PIE_COLORS[i%PIE_COLORS.length]}"></span><span class="pl-label">${esc(e.label)}</span><span class="pl-val">${e.value} (${Math.round(e.value/total*100)}%)</span></div>`).join('');
+  return `<div class="pie-wrap"><div class="pie" style="background:conic-gradient(${stops})"></div><div class="pie-legend">${legend}</div></div>`;}
 function statBlock(arr,fmt,uaoVal){const f=fmt||(v=>v);const s={min:Math.min(...arr),max:Math.max(...arr),mean:mean(arr),median:median(arr),sd:stdev(arr)};
   let h=`<div>`+[['Mínimo',f(s.min)],['Máximo',f(s.max)],['Promedio',f(s.mean)],['Mediana',f(s.median)],['Desv. estándar',s.sd!=null?f(s.sd):'—'],['n (excluye UAO)',arr.length]].map(([k,v])=>`<div class="statline"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
   if(uaoVal!=null){const p=percentileOf(arr,uaoVal);h+=`<div class="statline uao"><span class="k">UAO (propuesta)</span><span class="v">${f(uaoVal)} · P${p}</span></div>`;}
@@ -296,7 +310,7 @@ function head(letter,tag,tagcls,ttl,q){return `<div class="section-head"><div cl
 const objToEntries=(o,uaoLabel)=>o.map(x=>({label:x.label,v:x.value,uao:uaoLabel&&x.label===uaoLabel}));
 
 /* precompute */
-const credC=BENCH.map(r=>r.cred).filter(v=>v!=null),durC=BENCH.map(r=>r.periodos).filter(v=>v!=null),priceC=BENCH.map(r=>r.precio).filter(v=>v!=null);
+const credC=BENCH.map(r=>r.cred).filter(v=>v!=null),durC=BENCH.map(r=>r.periodos).filter(v=>v!=null),priceC=BENCH_ALL.map(r=>r.precio).filter(v=>v!=null);
 function dist(recs,key){const m=new Map();recs.forEach(r=>{const k=r[key]||'n/d';m.set(k,(m.get(k)||0)+1);});return[...m.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value);}
 const modDist=dist(BENCH,'mod'),secDist=dist(BENCH,'sector'),geoDist=dist(BENCH,'dep'),nivDist=dist(DATA_NAC,'nivel'),depNac=dist(DATA_NAC,'dep');
 const credPctUAO=percentileOf(credC,UAO_PROP.cred),durPctUAO=percentileOf(durC,UAO_PROP.periodos);
@@ -309,9 +323,9 @@ const P=[];
 /* A · Resumen */
 P.push(`<section id="s-exec">${head('A','Síntesis','syn','Resumen Ejecutivo','Posición general de la denominación propuesta frente al mercado — dos universos de datos independientes.')}
 <div class="grid grid-4">
-${kpi('c-blue','Especializ. regionales',BENCH_ALL.length,`${REGION_DEPTS.length} deptos · ${BENCH.length} competidoras`)}
+${kpi('c-blue','Especializ. regionales',BENCH_ALL.length,`${new Set(BENCH_ALL.map(r=>r.dep)).size} deptos`)}
 ${kpi('c-blue','Créditos (mediana reg.)',median(credC),`UAO ${UAO_PROP.cred} · P${credPctUAO}`)}
-${kpi('c-blue','Duración (mediana reg.)',median(durC)+' sem',`UAO ${UAO_PROP.periodos} semestres`)}
+${kpi('c-blue','Duración (mediana reg.)',median(durC)+' semestres',`UAO ${UAO_PROP.periodos} semestres`)}
 ${kpi('c-gold','Índice diferenciación',DIFF+'/100',DIFF>=66?'Alta':DIFF>=40?'Media':'Baja')}
 </div>
 <div class="grid grid-4" style="margin-top:16px">
@@ -323,8 +337,8 @@ ${kpi('c-good','Modalidad UAO','Híbrida',`Poco frecuente en la región`)}
 <div class="card" style="margin-top:16px"><h3 class="h">Hallazgos prioritarios</h3>
 ${insight('blue','🧭',`<p><b>Dos universos, sin mezcla.</b> La <b>denominación</b> se analiza sobre ${DATA_NAC.length} programas nacionales (${nivDist.map(n=>n.value+' '+n.label.toLowerCase()+'s').join(', ')}); el <b>benchmark cuantitativo</b> usa solo las ${BENCH_ALL.length} especializaciones de ${REGION_NAME}. Ningún indicador cruza ambas poblaciones.</p>`)}
 ${insight('wine','⚠️',`<p><b>Riesgo de nombre.</b> Ya existe una <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}, ${SIM_NAC[0].dep}) con <b>${(SIM_NAC[0].comp*100).toFixed(0)}%</b> de similitud combinada; la propuesta se distingue esencialmente por el calificador "Avanzadas".</p>`)}
-${insight('good','🌱',`<p><b>Segmento poco saturado.</b> Solo ${BENCH.length} especializaciones competidoras en la región, concentradas en ${geoDist[0]?.label}. Cauca, Nariño y Risaralda no registran oferta directa del campo.</p>`)}
-${insight('gold','📉',`<p><b>Datos financieros y de demanda escasos.</b> Solo ${priceC.length} de ${BENCH.length} competidoras publican precio y ninguna reporta matrícula: el posicionamiento por precio/demanda no es concluyente. No se imputan valores (N/A ≠ 0).</p>`)}
+${insight('good','🌱',`<p><b>Segmento poco saturado.</b> Solo ${BENCH_ALL.length} especializaciones en la región, concentradas en ${geoDist[0]?.label}. Cauca, Nariño y Risaralda no registran oferta directa del campo.</p>`)}
+${insight('gold','📉',`<p><b>Datos financieros y de demanda escasos.</b> Solo ${priceC.length} de ${BENCH_ALL.length} competidoras publican precio y ninguna reporta matrícula: el posicionamiento por precio/demanda no es concluyente. No se imputan valores (N/A ≠ 0).</p>`)}
 </div></section>`);
 
 /* B · Programa UAO */
@@ -339,6 +353,17 @@ function rankTable(){const levels=[...new Set(RR.map(r=>r.niv).filter(Boolean))]
 P.push(`<section id="s-uao">${head('B','Referencia','ben','Programa UAO','El programa propuesto se mantiene visible como referencia, pero se excluye de todos los cálculos estadísticos (FLAG_PROGRAMA).')}
 <div class="card"><h3 class="h">Ranking de programas afines</h3>${rankTable()}
 <p class="note">Denominación = universo nacional (todos los niveles). El programa UAO propuesto proviene de la ficha del Comité Curricular y no está registrado en SNIES; la UAO actual es el referente interno del campo.</p></div>
+<div class="card" style="margin-top:16px"><h3 class="h">Ficha del programa propuesto</h3>
+<div class="statline uao"><span class="k">Institución</span><span class="v">${esc(UAO_PROP.inst)}</span></div>
+<div class="statline uao"><span class="k">Programa</span><span class="v">${esc(UAO_PROP.prog)}</span></div>
+<div class="statline uao"><span class="k">Nivel</span><span class="v">${UAO_PROP.nivel}</span></div>
+<div class="statline uao"><span class="k">Modalidad</span><span class="v">${UAO_PROP.mod}</span></div>
+<div class="statline uao"><span class="k">Sector</span><span class="v">${UAO_PROP.sector}</span></div>
+<div class="statline uao"><span class="k">Departamento · Municipio</span><span class="v">${UAO_PROP.dep} · ${UAO_PROP.mun}</span></div>
+<div class="statline uao"><span class="k">Créditos</span><span class="v">${UAO_PROP.cred}</span></div>
+<div class="statline uao"><span class="k">Duración</span><span class="v">${UAO_PROP.periodos} semestres</span></div>
+<div class="statline uao"><span class="k">Precio semestre</span><span class="v na">s/i (no definido)</span></div>
+<p class="note">Ficha de referencia de la denominación propuesta ante el Comité Curricular; no está registrada en SNIES y se excluye de todos los cálculos estadísticos (FLAG_PROGRAMA).</p></div>
 <div class="card" style="margin-top:16px"><h3 class="h">Caracterización UAO vs. especializaciones regionales</h3>
 <table><thead><tr><th>Atributo</th><th>UAO (propuesto)</th><th>Mediana regional</th><th>Promedio regional</th><th>Posición</th></tr></thead><tbody>
 <tr class="uao-row"><td>Créditos</td><td>${UAO_PROP.cred}</td><td>${median(credC)}</td><td>${mean(credC)?.toFixed(1)}</td><td>Percentil ${credPctUAO}</td></tr>
@@ -354,8 +379,8 @@ ${insight('gold','🏫',`<p><b>${title(UAO_EXISTING[0].prog)}</b> — ${UAO_EXIS
 P.push(`<section id="s-bench">${head('C','Benchmark numérico · Regional','ben','Benchmark Regional','Universo exclusivo: especializaciones de Valle del Cauca, Cauca, Nariño, Risaralda, Quindío y Caldas. Maestrías y doctorados no entran en ningún cálculo.')}
 ${insight('wine','⚠️',`<p><b>Advertencia de tamaño muestral.</b> El segmento regional de especializaciones del campo es muy pequeño: <b>${BENCH_ALL.length} programas</b> (${BENCH.length} externos a la UAO), presentes solo en ${new Set(BENCH.map(r=>r.dep)).size} de los 6 departamentos. Medianas y percentiles son indicativos. La escasez es, en sí misma, un hallazgo: <b>baja saturación regional</b>.</p>`)}
 <div class="grid grid-2">
-<div class="card"><h3 class="h">Distribución por modalidad</h3>${barlist(objToEntries(modDist),'wine')}<div class="legend"><span><span class="dot" style="background:var(--accent)"></span>UAO propone modalidad híbrida</span></div></div>
-<div class="card"><h3 class="h">Distribución por sector</h3>${barlist(objToEntries(secDist),'gold')}</div>
+<div class="card"><h3 class="h">Distribución por modalidad</h3>${pieChart(modDist)}<div class="legend"><span><span class="dot" style="background:var(--accent)"></span>UAO propone modalidad híbrida</span></div></div>
+<div class="card"><h3 class="h">Distribución por sector</h3>${pieChart(secDist)}</div>
 </div>
 <div class="grid grid-2" style="margin-top:16px">
 <div class="card"><h3 class="h">Distribución geográfica</h3>${barlist(objToEntries(geoDist),'slate')}
@@ -366,7 +391,7 @@ ${insight('blue','📍',`<p>Concentración en <b>${geoDist[0]?.label}</b> (${geo
 <div class="grid grid-3" style="margin-top:16px">
 <div class="card"><h3 class="h">Créditos — estadísticos</h3>${statBlock(credC,v=>v==null?'—':(Number.isInteger(v)?v:v.toFixed(1)),UAO_PROP.cred)}${outliers(credC).length?`<p class="note">Outliers (1.5·IQR): ${outliers(credC).join(', ')}.</p>`:'<p class="note">Sin outliers (1.5·IQR).</p>'}</div>
 <div class="card"><h3 class="h">Precio semestral (COP)</h3>${priceC.length?statBlock(priceC,COP):'<p class="small">Sin datos suficientes.</p>'}
-${insight('wine','💸',`<p><b>Dato insuficiente.</b> Solo ${priceC.length} de ${BENCH.length} competidoras publican precio, y la UAO no reporta precio para la propuesta. No se calculan percentiles de precio; conviene relevar tarifas directamente.</p>`)}</div>
+${insight('wine','💸',`<p><b>Dato insuficiente.</b> Solo ${priceC.length} de ${BENCH_ALL.length} programas de la región publican precio, y la UAO no reporta precio para la propuesta. No se calculan percentiles de precio; conviene relevar tarifas directamente.</p>`)}</div>
 <div class="card"><h3 class="h">Posición UAO — resumen</h3>
 <div class="statline uao"><span class="k">Créditos</span><span class="v">P${credPctUAO}</span></div>
 <div class="statline uao"><span class="k">Duración</span><span class="v">P${durPctUAO}</span></div>
@@ -382,7 +407,12 @@ ${insight('wine','⚠️',`<p><b>Demanda no evidenciable para el segmento extern
 <table><thead><tr><th>Año</th><th>Programas con demanda reportada</th><th>Demanda total</th></tr></thead><tbody>
 ${demByYear.map(d=>`<tr><td>${d.y}</td><td>${d.vals.length} de ${BENCH_ALL.length}</td><td>${d.vals.length?d.vals.reduce((a,b)=>a+b,0):'<span class="na">n/d</span>'}</td></tr>`).join('')}
 </tbody></table>
-${insight('slate','🔎',`<p>Para dimensionar demanda real conviene cruzar con inscritos/aspirantes internos de la UAO y con programas afines de mayor nivel, sin mezclarlos en el benchmark de especializaciones.</p>`)}</div></section>`);
+${insight('slate','🔎',`<p>Para dimensionar demanda real conviene cruzar con inscritos/aspirantes internos de la UAO y con programas afines de mayor nivel, sin mezclarlos en el benchmark de especializaciones.</p>`)}</div>
+<div class="card" style="margin-top:16px"><h3 class="h">Listado de programas regionales</h3>
+<div class="table-scroll"><table><thead><tr><th>Programa</th><th>Institución</th><th>Precio semestre</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th></tr></thead><tbody>
+${BENCH_ALL.map(r=>`<tr class="${r.uao?'uao-row':''}"><td>${esc(title(r.prog))}</td><td>${esc(title(r.inst))}</td><td>${r.precio!=null?COP(r.precio):'<span class="na">s/i</span>'}</td>${[2020,2021,2022,2023,2024].map(y=>`<td>${r.dem&&r.dem[y]!=null&&r.dem[y]>0?r.dem[y]:'<span class="na">—</span>'}</td>`).join('')}</tr>`).join('')}
+</tbody></table></div>
+<p class="note">Incluye las ${BENCH_ALL.length} especializaciones del ${REGION_NAME} (externas + oferta actual de la UAO, resaltada).</p></div></section>`);
 
 /* E · Saturación */
 P.push(`<section id="s-satur">${head('E','Benchmark numérico · Regional','ben','Saturación · Demanda vs. Oferta','Familias detectadas dentro de las especializaciones regionales, ordenadas por número de programas (oferta).')}
@@ -500,7 +530,7 @@ document.getElementById('foot-nac').textContent=DATA_NAC.length;
 document.getElementById('foot-ben').textContent=BENCH.length;
 
 /* sortable and filterable ranking */
-(function(){const t=document.getElementById('rank'),levelSelect=document.getElementById('rank-level'),body=document.getElementById('rank-body');if(!t||!levelSelect||!body)return;let cur={k:'cred',dir:-1};
+(function(){const t=document.getElementById('rank'),levelSelect=document.getElementById('rank-level'),body=document.getElementById('rank-body');if(!t||!levelSelect||!body)return;let cur={k:null,dir:-1};
   function bindSort(){
   t.querySelectorAll('th').forEach(th=>{th.addEventListener('click',()=>{const k=th.dataset.k;cur.dir=cur.k===k?-cur.dir:-1;cur.k=k;
     t.querySelectorAll('th').forEach(x=>x.classList.remove('sorted','asc'));th.classList.add('sorted');if(cur.dir===1)th.classList.add('asc');
