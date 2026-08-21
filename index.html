@@ -229,7 +229,7 @@ footer{margin-top:60px;padding:24px 32px;text-align:center;font-size:11px;color:
     </div>
   </div>
   <div class="wrap" id="wrap"></div>
-  <footer>Elaborado por Inteligencia de Mercados · Dirección de Marketing — Universidad Autónoma de Occidente · 2026. Fuente primaria: SNIES (MEN Colombia). Documento de apoyo al Comité Curricular; no constituye registro oficial.</footer>
+  <footer>Elaborado por Inteligencia de Mercados · Dirección de Marketing — Universidad Autónoma de Occidente · 2026. Fuente primaria: SNIES (MEN Colombia).</footer>
 </div>
 </div>
 
@@ -309,7 +309,7 @@ const objToEntries=(o,uaoLabel)=>o.map(x=>({label:x.label,v:x.value,uao:uaoLabel
 /* precompute */
 const credC=BENCH.map(r=>r.cred).filter(v=>v!=null),durC=BENCH.map(r=>r.periodos).filter(v=>v!=null),priceC=BENCH_ALL.map(r=>r.precio).filter(v=>v!=null);
 function dist(recs,key){const m=new Map();recs.forEach(r=>{const k=r[key]||'n/d';m.set(k,(m.get(k)||0)+1);});return[...m.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value);}
-const modDist=dist(BENCH,'mod'),secDist=dist(BENCH,'sector'),geoDist=dist(BENCH,'dep'),nivDist=dist(DATA_NAC,'nivel'),depNac=dist(DATA_NAC,'dep');
+const modDist=dist(BENCH,'mod'),secDist=dist(BENCH,'sector'),geoDist=dist(BENCH_ALL,'dep'),nivDist=dist(DATA_NAC,'nivel'),depNac=dist(DATA_NAC,'dep');
 const credPctUAO=percentileOf(credC,UAO_PROP.cred),durPctUAO=percentileOf(durC,UAO_PROP.periodos);
 const FAMNAC=buildFamilies(DATA_NAC);
 
@@ -358,7 +358,7 @@ ${depts.map(d=>`<label class="dep-opt"><input type="checkbox" class="dep-item" v
 <tbody id="rank-body">${rankBody()}</tbody></table></div>`;}
 P.push(`<section id="s-uao">${head('B','Referencia','ben','Caracterización del Programa','El programa propuesto se mantiene visible como referencia, pero se excluye de todos los cálculos estadísticos.')}
 <div class="card"><h3 class="h">Ranking de programas afines</h3>${rankTable()}
-<p class="note">Denominación = universo nacional (todos los niveles). El programa UAO propuesto proviene de la ficha del Comité Curricular y no está registrado en SNIES; la UAO actual es el referente interno del campo.</p></div>
+<p class="note"></p></div>
 <div class="card" style="margin-top:16px"><h3 class="h">Ficha del programa propuesto</h3>
 <div class="statline uao"><span class="k">Institución</span><span class="v">${esc(UAO_PROP.inst)}</span></div>
 <div class="statline uao"><span class="k">Programa</span><span class="v">${esc(UAO_PROP.prog)}</span></div>
@@ -390,7 +390,7 @@ ${insight('wine','⚠️',`<p><b>Advertencia de tamaño muestral.</b> El segment
 </div>
 <div class="grid grid-2" style="margin-top:16px">
 <div class="card"><h3 class="h">Distribución geográfica</h3>${barlist(objToEntries(geoDist),'slate')}
-${insight('blue','📍',`<p>Concentración en <b>${geoDist[0]?.label}</b> (${geoDist[0]?.value}/${BENCH.length}). Cauca, Nariño y Risaralda no registran especializaciones del campo → territorios sin competencia directa.</p>`)}</div>
+${insight('blue','📍',`<p>Concentración en <b>${geoDist[0]?.label}</b> (${geoDist[0]?.value}/${BENCH_ALL.length}). Cauca, Nariño y Risaralda no registran especializaciones del campo → territorios sin competencia directa.</p>`)}</div>
 <div class="card"><h3 class="h">Duración (semestres)</h3>${statBlock(durC,v=>v==null?'—':(Number.isInteger(v)?v:v.toFixed(1)),UAO_PROP.periodos)}
 <p class="note">Estándar absoluto del segmento: 2 semestres. No diferencia ni penaliza.</p></div>
 </div>
@@ -410,7 +410,7 @@ ${insight('blue','🗺️',`<p><b>${depNac[0].label}</b> concentra ${Math.round(
 
 /* E · Demanda */
 P.push(`<section id="s-demanda">${head('E','Benchmark numérico · Regional','ben','Demanda','Matrícula histórica 2020–2024, exclusivamente sobre especializaciones.')}
-${insight('wine','⚠️',`<p><b>Demanda no evidenciable para el segmento externo.</b> Ninguna de las ${BENCH.length} especializaciones competidoras reporta matrícula en la base. El único registro del campo en la región es la <b>oferta actual de la UAO</b> (${UAO_EXISTING[0]&&UAO_EXISTING[0].dem[2024]?UAO_EXISTING[0].dem[2024]:'44'} matriculados en 2024). No se construyen series ni promedios regionales de demanda; se indica explícitamente en lugar de imputar (reglas 7, 8 y 10).</p>`)}
+${insight('wine','⚠️',`<p><b>Demanda no evidenciable para el segmento externo.</b> Ninguna de las ${BENCH.length} especializaciones competidoras reporta matrícula en la base. El único registro del campo en la región es la <b>oferta actual de la UAO</b> (${UAO_EXISTING[0]&&UAO_EXISTING[0].dem[2024]?UAO_EXISTING[0].dem[2024]:'44'} matriculados en 2024).</p>`)}
 <div class="card"><h3 class="h">Listado de especializaciones (nacional)</h3>
 <div class="table-scroll"><table id="esp-table"><thead><tr><th data-k="prog">Programa</th><th data-k="inst">Institución</th><th data-k="mun">Ciudad</th><th data-k="mod">Modalidad</th><th data-k="precio">Precio semestre</th><th data-k="d2020">2020</th><th data-k="d2021">2021</th><th data-k="d2022">2022</th><th data-k="d2023">2023</th><th data-k="d2024">2024</th></tr></thead><tbody>
 ${ESP.map(r=>`<tr class="${r.uao?'uao-row':''}"><td>${esc(title(r.prog))}</td><td>${esc(title(r.inst))}</td><td>${esc(r.mun||'—')}</td><td>${r.mod||'—'}</td><td>${r.precio!=null?COP(r.precio):'<span class="na">s/i</span>'}</td>${[2020,2021,2022,2023,2024].map(y=>`<td>${r.dem&&r.dem[y]!=null&&r.dem[y]>0?r.dem[y]:'<span class="na">—</span>'}</td>`).join('')}</tr>`).join('')}
