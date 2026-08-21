@@ -210,8 +210,7 @@ footer{margin-top:60px;padding:24px 32px;text-align:center;font-size:11px;color:
     <a href="#s-kw"><span class="tag">🔑</span>G · Palabras Clave</a>
     <a href="#s-sim"><span class="tag">🔁</span>H · Similitud</a>
     <div class="sidenav-label syn">Síntesis</div>
-    <a href="#s-diag"><span class="tag">🎯</span>I · Diagnóstico</a>
-    <a href="#s-concl"><span class="tag">✅</span>J · Conclusiones</a>
+    <a href="#s-diag"><span class="tag">🎯</span>I · Diagnóstico y Conclusiones</a>
   </div>
   <div class="sidenav-foot">Fuente: SNIES · MEN Colombia<br>Denominación: n=<span id="foot-nac">—</span> · Benchmark: n=<span id="foot-ben">—</span><br>Actualizado: Agosto 2026<br>Inteligencia de Mercados — UAO</div>
 </nav>
@@ -456,14 +455,15 @@ ${insight(SIM_NAC[0].comp>=.5?'wine':'blue','🎯',`<p><b>Hallazgo central.</b> 
 <div class="card"><h3 class="h">Ranking nacional de similitud (Top 12)</h3><p class="small" style="margin-bottom:10px">Incluye especializaciones, maestrías y doctorados.</p>${simTable(SIM_NAC.slice(0,12))}</div>
 </section>`);
 
-/* I · Diagnóstico */
+/* I · Diagnóstico y Conclusiones */
 const reco=SIM_NAC[0].comp>=.55?['Mantener con ajustes menores',`El núcleo conceptual es adecuado y regionalmente poco saturado, pero existe un programa nacional casi homónimo ("${title(SIM_NAC[0].prog)}"). Se recomienda ajustar el calificador para elevar la diferenciación —anclando "experiencias" a un vertical o sumando un término emergente— conservando la claridad de mercado.`]
   :DIFF>=60?['Mantener denominación','La denominación es clara y suficientemente diferenciada; el segmento regional está poco saturado.']
   :['Revisar denominación','La similitud con la oferta existente es alta; conviene reforzar el elemento distintivo antes de registrar.'];
-P.push(`<section id="s-diag">${head('I','Síntesis','syn','Diagnóstico Ejecutivo','Fortalezas, debilidades, oportunidades y riesgos, con recomendación sustentada.')}
+const lowSat=FAMNAC.filter(f=>f.n<=2&&f.fam!=='otros').slice(0,6);
+P.push(`<section id="s-diag">${head('I','Síntesis','syn','Diagnóstico Ejecutivo','Fortalezas, debilidades, oportunidades, riesgos y conclusiones, con recomendación sustentada.')}
 <div class="diag-grid">
 <div class="diag-box diag-f"><h4>Fortalezas</h4><ul>
-<li>Segmento regional de especialización <b>poco saturado</b> (${BENCH.length} competidoras).</li>
+<li>Segmento regional de especialización <b>poco saturado</b> (${BENCH_ALL.length} competidoras).</li>
 <li>Créditos (${UAO_PROP.cred}) y duración (${UAO_PROP.periodos} sem.) <b>alineados</b> con el estándar regional.</li>
 <li>Modalidad <b>híbrida</b>: pocos competidores la ofrecen; amplía cobertura territorial.</li>
 <li>Núcleo conceptual reconocible y buscado ("diseño", "experiencias", "digitales").</li></ul></div>
@@ -474,28 +474,20 @@ P.push(`<section id="s-diag">${head('I','Síntesis','syn','Diagnóstico Ejecutiv
 <div class="diag-box diag-o"><h4>Oportunidades</h4><ul>
 <li>Departamentos regionales <b>sin competencia</b> directa (Cauca, Nariño, Risaralda).</li>
 <li>Fórmula "Diseño de Experiencias Digitales" aún <b>emergente</b> (${comboAll.length} ocurrencia nacional).</li>
-<li>Espacio para <b>anclar un vertical</b> (inmersivo, servicio, producto, IA).</li></ul></div>
+<li>Posibilidad de <b>enfocar la propuesta en un área específica</b> —experiencias inmersivas, de servicio, de producto o apoyadas en IA— para reforzar su diferenciación.</li></ul></div>
 <div class="diag-box diag-r"><h4>Riesgos</h4><ul>
 
 <li>Familia de <b>animación digital</b> más poblada: podría opacar en búsquedas genéricas.</li>
 <li>Demanda regional <b>no evidenciable</b> con los datos actuales.</li></ul></div>
 </div>
-<div class="reco"><div class="rl">Recomendación al Comité Curricular</div><div class="rv">${reco[0]}</div><div class="rd">${reco[1]}</div></div>
-</section>`);
-
-/* J · Conclusiones (incluye antigua sección de Oportunidades Estratégicas) */
-const lowSat=FAMNAC.filter(f=>f.n<=2&&f.fam!=='otros').slice(0,6);
-P.push(`<section id="s-concl">${head('J','Síntesis','syn','Conclusiones','Síntesis ejecutiva dirigida al Comité Curricular.')}
-<div class="card">
+<div class="card" style="margin-top:16px"><h3 class="h">Conclusiones</h3>
 ${insight('blue','🎯',`<p><b>Recomendación final.</b>El núcleo conceptual es adecuado y regionalmente poco saturado, pero existe un programa nacional casi homónimo ("Especialización En Diseño De Experiencias Digitales"). Se recomienda ajustar el calificador para elevar la diferenciación —anclando "experiencias" a un vertical o sumando un término emergente— conservando la claridad de mercado.</p>`)}
 ${insight('wine','⚠️',`<p><b>Riesgo principal.</b> Colisión de nombre con "${title(SIM_NAC[0].prog)}" (${title(SIM_NAC[0].inst)}). Dentro del Suroccidente + Eje Cafetero la similitud de nombre también es alta (${(SIM_REG[0]?SIM_REG[0].comp*100:0).toFixed(0)}% con la más cercana), aunque la saturación de oferta regional es baja.</p>`)}
 ${insight('good','🌱',`<p><b>Oferta regional y espacio para la propuesta.</b> Oferta poco densa: ${BENCH.length} especializaciones externas, concentradas en ${geoDist[0]?.label}. Sí existe espacio para la propuesta UAO, por modalidad híbrida y por departamentos sin competencia directa.</p>`)}
-${insight('gold','🧩',`<p><b>Conceptos saturados y de oportunidad.</b> "${title(FAMNAC[0].fam)}" y "${title(FAMNAC[1].fam)}" concentran la oferta nacional ("digital" es transversal). "Experiencias" ancladas a un vertical y calificadores emergentes son oportunidad; "avanzadas" queda libre pero aporta poco valor diferenciador.</p>`)}
 ${insight('good','🎯',`<p><b>Nichos territoriales.</b> Cauca, Nariño y Risaralda no registran especializaciones del campo → mercados abiertos, especialmente para modalidad híbrida. Fuera de ${geoDist[0]?.label}, la oferta regional es casi nula.</p>`)}
 ${insight('gold','🧩',`<p><b>Familias poco saturadas.</b> ${lowSat.map(f=>title(f.fam)).join(', ')} — conceptos con ≤2 programas nacionales.</p>`)}
-${insight('blue','🏷️',`<p><b>Diferenciadores disponibles.</b> "Avanzadas" casi no se usa (${CONCEPTS[3].tot}/${DATA_NAC.length}); la fórmula "Diseño de Experiencias Digitales" tiene solo ${comboAll.length} ocurrencia(s) nacional(es). Anclar "experiencias" a un vertical (inmersivas, de servicio, de producto) o sumar un término emergente (IA, inmersivo) eleva la diferenciación sin perder claridad.</p>`)}
-
-</div></section>`);
+</div>
+</section>`);
 
 document.getElementById('wrap').innerHTML=P.join('');
 document.getElementById('hero-meta').innerHTML=[
