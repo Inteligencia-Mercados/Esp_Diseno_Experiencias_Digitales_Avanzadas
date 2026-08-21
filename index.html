@@ -383,7 +383,7 @@ ${insight('gold','🏫',`<p><b>${title(UAO_EXISTING[0].prog)}</b> — ${UAO_EXIS
 </section>`);
 
 /* C · Benchmark Regional */
-P.push(`<section id="s-bench">${head('C','Benchmark numérico · Regional','ben','Benchmark Regional','Universo exclusivo: especializaciones de Valle del Cauca, Cauca, Nariño, Risaralda, Quindío y Caldas. Maestrías y doctorados no entran en ningún cálculo.')}
+P.push(`<section id="s-bench">${head('C','Benchmark numérico · Regional','ben','Benchmark Regional','Especializaciones de Valle del Cauca, Cauca, Nariño, Risaralda, Quindío y Caldas. Maestrías y doctorados no entran en ningún cálculo.')}
 ${insight('wine','⚠️',`<p><b>Advertencia de tamaño muestral.</b> El segmento regional de especializaciones del campo es muy pequeño: <b>${BENCH_ALL.length} programas</b> (${BENCH.length} externos a la UAO), presentes solo en ${new Set(BENCH.map(r=>r.dep)).size} de los 6 departamentos. Medianas y percentiles son indicativos. La escasez es, en sí misma, un hallazgo: <b>baja saturación regional</b>.</p>`)}
 <div class="grid grid-2">
 <div class="card"><h3 class="h">Distribución por modalidad</h3>${pieChart(modDist)}<div class="legend"><span><span class="dot" style="background:var(--accent)"></span>UAO propone modalidad híbrida</span></div></div>
@@ -398,7 +398,7 @@ ${insight('blue','📍',`<p>Concentración en <b>${geoDist[0]?.label}</b> (${geo
 <div class="grid grid-2" style="margin-top:16px">
 <div class="card"><h3 class="h">Créditos — estadísticos</h3>${statBlock(credC,v=>v==null?'—':(Number.isInteger(v)?v:v.toFixed(1)),UAO_PROP.cred)}${outliers(credC).length?`<p class="note">Outliers (1.5·IQR): ${outliers(credC).join(', ')}.</p>`:'<p class="note">Sin outliers (1.5·IQR).</p>'}</div>
 <div class="card"><h3 class="h">Precio semestral (COP)</h3>${priceC.length?statBlock(priceC,COP):'<p class="small">Sin datos suficientes.</p>'}
-${insight('wine','💸',`<p><b>Dato insuficiente.</b> Solo ${priceC.length} de ${BENCH_ALL.length} programas de la región publican precio, y la UAO no reporta precio para la propuesta. No se calculan percentiles de precio; conviene relevar tarifas directamente.</p>`)}</div>
+${insight('wine','💸',`<p><b>Dato insuficiente.</b> Solo ${priceC.length} de ${BENCH_ALL.length} programas de la región publican precio, y la UAO no reporta precio para la propuesta. No se calculan percentiles de precio.</p>`)}</div>
 </div></section>`);
 
 /* D · Oferta Nacional */
@@ -410,13 +410,13 @@ ${insight('blue','🗺️',`<p><b>${depNac[0].label}</b> concentra ${Math.round(
 </div></section>`);
 
 /* E · Demanda */
-P.push(`<section id="s-demanda">${head('E','Benchmark numérico · Regional','ben','Demanda','Matrícula histórica 2020–2024, exclusivamente sobre especializaciones regionales.')}
+P.push(`<section id="s-demanda">${head('E','Benchmark numérico · Regional','ben','Demanda','Matrícula histórica 2020–2024, exclusivamente sobre especializaciones.')}
 ${insight('wine','⚠️',`<p><b>Demanda no evidenciable para el segmento externo.</b> Ninguna de las ${BENCH.length} especializaciones competidoras reporta matrícula en la base. El único registro del campo en la región es la <b>oferta actual de la UAO</b> (${UAO_EXISTING[0]&&UAO_EXISTING[0].dem[2024]?UAO_EXISTING[0].dem[2024]:'44'} matriculados en 2024). No se construyen series ni promedios regionales de demanda; se indica explícitamente en lugar de imputar (reglas 7, 8 y 10).</p>`)}
 <div class="card"><h3 class="h">Listado de especializaciones (nacional)</h3>
 <div class="table-scroll"><table id="esp-table"><thead><tr><th data-k="prog">Programa</th><th data-k="inst">Institución</th><th data-k="mun">Ciudad</th><th data-k="mod">Modalidad</th><th data-k="precio">Precio semestre</th><th data-k="d2020">2020</th><th data-k="d2021">2021</th><th data-k="d2022">2022</th><th data-k="d2023">2023</th><th data-k="d2024">2024</th></tr></thead><tbody>
 ${ESP.map(r=>`<tr class="${r.uao?'uao-row':''}"><td>${esc(title(r.prog))}</td><td>${esc(title(r.inst))}</td><td>${esc(r.mun||'—')}</td><td>${r.mod||'—'}</td><td>${r.precio!=null?COP(r.precio):'<span class="na">s/i</span>'}</td>${[2020,2021,2022,2023,2024].map(y=>`<td>${r.dem&&r.dem[y]!=null&&r.dem[y]>0?r.dem[y]:'<span class="na">—</span>'}</td>`).join('')}</tr>`).join('')}
 </tbody></table></div>
-<p class="note">Incluye las ${ESP.length} especializaciones de nivel nacional (oferta actual de la UAO resaltada). La fuente SNIES usada aquí no trae fecha de resolución de registro calificado por programa, por lo que esa columna no se incluye.</p></div></section>`);
+<p class="note">Incluye las ${ESP.length} especializaciones de nivel nacional (oferta actual de la UAO resaltada).</p></div></section>`);
 
 /* F · Descomposición + Familias Semánticas */
 P.push(`<section id="s-denom">${head('F','Denominación · Nacional','den','Descomposición de la Denominación','¿Qué tan común, emergente o diferenciador es cada concepto de "Diseño · Experiencias · Digitales · Avanzadas"?')}
@@ -429,7 +429,7 @@ ${CONCEPTS.map(c=>{const b=c.pct>=25?'<span class="badge badge-warn">Frecuente</
 ${barlist([{label:'Usan "Diseño" + "Experiencia(s)"',v:comboDE.length},{label:'Usan los tres conceptos',v:comboAll.length,color:'wine'}],'slate',{max:Math.max(comboDE.length,comboAll.length,1)})}
 ${insight(comboAll.length<=1?'good':'wine',comboAll.length<=1?'🌱':'⚠️',`<p>${comboAll.length<=1?'La combinación exacta es <b>emergente/rara</b>: casi no hay competencia con esa fórmula precisa.':'La combinación exacta ya aparece en el mercado: no es totalmente inédita.'}</p>`)}</div>
 <div class="card"><h3 class="h">Análisis del término "Avanzadas"</h3>
-<div class="kpi c-gold" style="text-align:left;border-top:none;padding:0"><div class="val" style="font-size:40px">${CONCEPTS[3].tot}</div><div class="foot">programas en toda la oferta nacional usan "avanzad*"</div></div>
+<div class="kpi c-gold" style="text-align:left;border-top:none;padding:0"><div class="val" style="font-size:40px">${CONCEPTS[3].tot}</div><div class="foot">programas en toda la oferta nacional usan "avanzadas*"</div></div>
 ${insight('gold','🏷️',`<p><b>Función descriptiva, no diferenciadora.</b> "Avanzadas" no es un término utilizado (${CONCEPTS[3].tot}/${DATA_NAC.length}). Aporta promesa de nivel, pero no crea categoría ni ancla búsqueda: su valor es de <b>posicionamiento percibido</b>.</p>`)}</div>
 </div>
 <div class="card" style="margin-top:16px"><h3 class="h">Familias léxicas del campo (nacional)</h3>
