@@ -85,7 +85,9 @@ section{padding-top:34px;scroll-margin-top:64px}
 .dep-toggle{border:1px solid var(--line);border-radius:5px;background:#fff;color:var(--ink);font:inherit;font-weight:500;padding:7px 10px;cursor:pointer;white-space:nowrap}
 .dep-toggle:hover{border-color:var(--ink-faint)}
 .dep-panel{position:absolute;top:calc(100% + 4px);right:0;background:#fff;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow);padding:8px 10px;max-height:220px;overflow:auto;z-index:20;min-width:210px;display:flex;flex-direction:column;gap:6px}
+.dep-panel[hidden]{display:none}
 .dep-opt{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink);font-weight:400;white-space:nowrap;cursor:pointer}
+.dep-sep{border-top:1px solid var(--line);margin:2px 0 4px}
 @media(max-width:600px){.table-toolbar{align-items:flex-start;flex-direction:column}.table-filter{width:100%;justify-content:space-between}.table-filter select{flex:1;max-width:220px}}
 .grid{display:grid;gap:16px}
 .grid-4{grid-template-columns:repeat(4,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}
@@ -165,12 +167,6 @@ tbody tr:hover td{background:#f8fafc}tr.uao-row:hover td{background:#fef9c3}
 .reco .rv{font-family:var(--disp);font-size:25px;font-weight:800;margin:6px 0 8px;text-transform:uppercase}
 .reco .rd{font-size:13px;color:#d6d6da;max-width:840px;line-height:1.65}
 
-.concl .ci{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
-.concl .ci:last-child{border-bottom:none}
-.concl .ci .n{font-family:var(--disp);font-weight:800;color:var(--accent);font-size:22px;flex:none;width:30px;text-align:center}
-.concl .ci .qx{font-weight:700;color:var(--ink);font-size:13px}
-.concl .ci .ax{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
-
 .statline{display:grid;grid-template-columns:1fr auto;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line)}
 .statline:last-child{border-bottom:none}.statline .k{color:var(--ink-soft)}.statline .v{font-weight:700}
 .statline.uao{color:var(--primary)}.statline.uao .k{color:var(--primary)}
@@ -204,21 +200,18 @@ footer{margin-top:60px;padding:24px 32px;text-align:center;font-size:11px;color:
   <div class="sidenav-nav" id="nav">
     <div class="sidenav-label">Contenido</div>
     <a href="#s-exec" class="active"><span class="tag">🏠</span>A · Resumen Ejecutivo</a>
-    <a href="#s-uao"><span class="tag">🎓</span>B · Programa UAO</a>
+    <a href="#s-uao"><span class="tag">🎓</span>B · Caracterización del Programa</a>
     <div class="sidenav-label ben">Benchmark numérico · Regional</div>
     <a href="#s-bench"><span class="tag">📊</span>C · Benchmark Regional</a>
-    <a href="#s-demanda"><span class="tag">📈</span>D · Demanda</a>
-    <a href="#s-satur"><span class="tag">🧩</span>E · Saturación</a>
+    <a href="#s-nac"><span class="tag">🗺️</span>D · Oferta Nacional</a>
+    <a href="#s-demanda"><span class="tag">📈</span>E · Demanda</a>
     <div class="sidenav-label den">Denominación · Nacional</div>
-    <a href="#s-nac"><span class="tag">🗺️</span>F · Oferta Nacional</a>
-    <a href="#s-denom"><span class="tag">🔤</span>G · Descomposición</a>
-    <a href="#s-kw"><span class="tag">🔑</span>H · Palabras Clave</a>
-    <a href="#s-fam"><span class="tag">🧬</span>I · Familias Semánticas</a>
-    <a href="#s-sim"><span class="tag">🔁</span>J · Similitud</a>
+    <a href="#s-denom"><span class="tag">🔤</span>F · Descomposición</a>
+    <a href="#s-kw"><span class="tag">🔑</span>G · Palabras Clave</a>
+    <a href="#s-sim"><span class="tag">🔁</span>H · Similitud</a>
     <div class="sidenav-label syn">Síntesis</div>
-    <a href="#s-oport"><span class="tag">💡</span>K · Oportunidades</a>
-    <a href="#s-diag"><span class="tag">🎯</span>L · Diagnóstico</a>
-    <a href="#s-concl"><span class="tag">✅</span>M · Conclusiones</a>
+    <a href="#s-diag"><span class="tag">🎯</span>I · Diagnóstico</a>
+    <a href="#s-concl"><span class="tag">✅</span>J · Conclusiones</a>
   </div>
   <div class="sidenav-foot">Fuente: SNIES · MEN Colombia<br>Denominación: n=<span id="foot-nac">—</span> · Benchmark: n=<span id="foot-ben">—</span><br>Actualizado: Agosto 2026<br>Inteligencia de Mercados — UAO</div>
 </nav>
@@ -226,7 +219,7 @@ footer{margin-top:60px;padding:24px 32px;text-align:center;font-size:11px;color:
 <div class="main">
   <div id="topbar">
     <div class="tt">Benchmark — Nuevo Programa <span>Especialización en Diseño de Experiencias Digitales Avanzadas · UAO</span></div>
-    <button id="btn-pdf" onclick="window.print()">⬇ Descargar PDF Ejecutivo</button>
+    <button id="btn-pdf" onclick="window.print()" style="display:none">⬇ Descargar PDF Ejecutivo</button>
   </div>
   <div class="hero">
     <div class="hero-inner">
@@ -319,8 +312,6 @@ const credC=BENCH.map(r=>r.cred).filter(v=>v!=null),durC=BENCH.map(r=>r.periodos
 function dist(recs,key){const m=new Map();recs.forEach(r=>{const k=r[key]||'n/d';m.set(k,(m.get(k)||0)+1);});return[...m.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value);}
 const modDist=dist(BENCH,'mod'),secDist=dist(BENCH,'sector'),geoDist=dist(BENCH,'dep'),nivDist=dist(DATA_NAC,'nivel'),depNac=dist(DATA_NAC,'dep');
 const credPctUAO=percentileOf(credC,UAO_PROP.cred),durPctUAO=percentileOf(durC,UAO_PROP.periodos);
-const regRecords=ESP.filter(r=>r.reg).concat([UAO_PROP]);
-const REGFAM=buildFamilies(regRecords).map(f=>{const d=f.items.map(x=>x.dem?x.dem[2024]:null).filter(v=>v!=null&&v>0);return{...f,dem:d.length?mean(d):null};});
 const FAMNAC=buildFamilies(DATA_NAC);
 
 const P=[];
@@ -333,17 +324,16 @@ ${kpi('c-blue','Créditos (mediana reg.)',median(credC),`UAO ${UAO_PROP.cred} ·
 ${kpi('c-blue','Duración (mediana reg.)',median(durC)+' semestres',`UAO ${UAO_PROP.periodos} semestres`)}
 ${kpi('c-gold','Índice diferenciación',DIFF+'/100',DIFF>=66?'Alta':DIFF>=40?'Media':'Baja')}
 </div>
-<div class="grid grid-4" style="margin-top:16px">
+<div class="grid grid-3" style="margin-top:16px">
 ${kpi('c-gold','Oferta nacional (denom.)',DATA_NAC.length,nivDist.map(n=>n.value+' '+n.label.toLowerCase()+'s').join(' · '))}
 ${kpi('c-gold','Similitud máx. del nombre',(SIM_NAC[0].comp*100).toFixed(0)+'%','vs. programa casi homónimo')}
-${kpi('c-purple','Competidores cercanos',near,'Similitud combinada ≥ 35%')}
 ${kpi('c-good','Modalidad UAO','Híbrida',`Poco frecuente en la región`)}
 </div>
 <div class="card" style="margin-top:16px"><h3 class="h">Hallazgos prioritarios</h3>
-${insight('blue','🧭',`<p><b>Dos universos, sin mezcla.</b> La <b>denominación</b> se analiza sobre ${DATA_NAC.length} programas nacionales (${nivDist.map(n=>n.value+' '+n.label.toLowerCase()+'s').join(', ')}); el <b>benchmark cuantitativo</b> usa solo las ${BENCH_ALL.length} especializaciones de ${REGION_NAME}. Ningún indicador cruza ambas poblaciones.</p>`)}
-${insight('wine','⚠️',`<p><b>Riesgo de nombre.</b> Ya existe una <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}, ${SIM_NAC[0].dep}) con <b>${(SIM_NAC[0].comp*100).toFixed(0)}%</b> de similitud combinada; la propuesta se distingue esencialmente por el calificador "Avanzadas".</p>`)}
+${insight('blue','🧭',`<p><b></b> La <b>denominación</b> se analiza sobre ${DATA_NAC.length} programas nacionales (${nivDist.map(n=>n.value+' '+n.label.toLowerCase()+'s').join(', ')}); el <b>benchmark cuantitativo</b> usa solo las ${BENCH_ALL.length} especializaciones de ${REGION_NAME}. Ningún indicador cruza ambas poblaciones.</p>`)}
+${insight('wine','⚠️',`<p><b>Riesgo de nombre.</b> Ya existe una <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}, ${SIM_NAC[0].dep}) con <b>${(SIM_NAC[0].comp*100).toFixed(0)}%</b> de similitud combinada.</p>`)}
 ${insight('good','🌱',`<p><b>Segmento poco saturado.</b> Solo ${BENCH_ALL.length} especializaciones en la región, concentradas en ${geoDist[0]?.label}. Cauca, Nariño y Risaralda no registran oferta directa del campo.</p>`)}
-${insight('gold','📉',`<p><b>Datos financieros y de demanda escasos.</b> Solo ${priceC.length} de ${BENCH_ALL.length} competidoras publican precio y ninguna reporta matrícula: el posicionamiento por precio/demanda no es concluyente. No se imputan valores (N/A ≠ 0).</p>`)}
+${insight('gold','📉',`<p><b>Datos financieros y de demanda escasos.</b> Solo ${priceC.length} de ${BENCH_ALL.length} competidoras publican precio y ninguna reporta matrícula: el posicionamiento por precio/demanda no es concluyente.</p>`)}
 </div></section>`);
 
 /* B · Programa UAO */
@@ -358,13 +348,16 @@ function rankTable(){const levels=[...new Set(RR.map(r=>r.niv).filter(Boolean))]
 <label class="table-filter" for="rank-level">Nivel<select id="rank-level"><option value="all">Todos los niveles</option>${levels.map(level=>`<option value="${esc(level)}">${esc(level)}</option>`).join('')}</select></label>
 <div class="table-filter dep-filter">Depto.<div class="dep-multiselect">
 <button type="button" class="dep-toggle" id="rank-dep-btn">Todos los departamentos ▾</button>
-<div class="dep-panel" id="rank-dep-panel" hidden>${depts.map(d=>`<label class="dep-opt"><input type="checkbox" value="${esc(d)}" checked> ${esc(d)}</label>`).join('')}</div>
+<div class="dep-panel" id="rank-dep-panel" hidden>
+<label class="dep-opt dep-all"><input type="checkbox" id="rank-dep-all" checked> <b>Seleccionar todos</b></label>
+<div class="dep-sep"></div>
+${depts.map(d=>`<label class="dep-opt"><input type="checkbox" class="dep-item" value="${esc(d)}" checked> ${esc(d)}</label>`).join('')}</div>
 </div></div>
 </div></div><div class="table-scroll"><table id="rank"><thead><tr>
 <th data-k="inst">Institución</th><th data-k="prog">Programa</th><th data-k="niv">Nivel</th><th data-k="mod">Modalidad</th>
 <th data-k="cred">Créd.</th><th data-k="dur">Dur.</th><th data-k="precio">Precio</th><th data-k="d24">Dem. 2024</th><th data-k="mun">Ciudad</th><th data-k="dep">Depto.</th></tr></thead>
 <tbody id="rank-body">${rankBody()}</tbody></table></div>`;}
-P.push(`<section id="s-uao">${head('B','Referencia','ben','Programa UAO','El programa propuesto se mantiene visible como referencia, pero se excluye de todos los cálculos estadísticos (FLAG_PROGRAMA).')}
+P.push(`<section id="s-uao">${head('B','Referencia','ben','Caracterización del Programa','El programa propuesto se mantiene visible como referencia, pero se excluye de todos los cálculos estadísticos.')}
 <div class="card"><h3 class="h">Ranking de programas afines</h3>${rankTable()}
 <p class="note">Denominación = universo nacional (todos los niveles). El programa UAO propuesto proviene de la ficha del Comité Curricular y no está registrado en SNIES; la UAO actual es el referente interno del campo.</p></div>
 <div class="card" style="margin-top:16px"><h3 class="h">Ficha del programa propuesto</h3>
@@ -408,8 +401,16 @@ ${insight('blue','📍',`<p>Concentración en <b>${geoDist[0]?.label}</b> (${geo
 ${insight('wine','💸',`<p><b>Dato insuficiente.</b> Solo ${priceC.length} de ${BENCH_ALL.length} programas de la región publican precio, y la UAO no reporta precio para la propuesta. No se calculan percentiles de precio; conviene relevar tarifas directamente.</p>`)}</div>
 </div></section>`);
 
-/* D · Demanda */
-P.push(`<section id="s-demanda">${head('D','Benchmark numérico · Regional','ben','Demanda','Matrícula histórica 2020–2024, exclusivamente sobre especializaciones regionales.')}
+/* D · Oferta Nacional */
+P.push(`<section id="s-nac">${head('D','Denominación · Nacional','den','Oferta Nacional','Universo semántico completo: especializaciones, maestrías y doctorados de todo el país. Sirve para leer cómo se nombra el campo, no para comparar cifras.')}
+<div class="grid grid-2">
+<div class="card"><h3 class="h">Composición por nivel</h3>${barlist(objToEntries(nivDist),'wine')}</div>
+<div class="card"><h3 class="h">Distribución territorial</h3>${barlist(objToEntries(depNac).slice(0,8),'gold')}
+${insight('blue','🗺️',`<p><b>${depNac[0].label}</b> concentra ${Math.round(100*depNac[0].value/DATA_NAC.length)}% de la oferta; el ${REGION_NAME} es mercado secundario, lo que refuerza el espacio regional para la UAO.</p>`)}</div>
+</div></section>`);
+
+/* E · Demanda */
+P.push(`<section id="s-demanda">${head('E','Benchmark numérico · Regional','ben','Demanda','Matrícula histórica 2020–2024, exclusivamente sobre especializaciones regionales.')}
 ${insight('wine','⚠️',`<p><b>Demanda no evidenciable para el segmento externo.</b> Ninguna de las ${BENCH.length} especializaciones competidoras reporta matrícula en la base. El único registro del campo en la región es la <b>oferta actual de la UAO</b> (${UAO_EXISTING[0]&&UAO_EXISTING[0].dem[2024]?UAO_EXISTING[0].dem[2024]:'44'} matriculados en 2024). No se construyen series ni promedios regionales de demanda; se indica explícitamente en lugar de imputar (reglas 7, 8 y 10).</p>`)}
 <div class="card"><h3 class="h">Listado de especializaciones (nacional)</h3>
 <div class="table-scroll"><table id="esp-table"><thead><tr><th data-k="prog">Programa</th><th data-k="inst">Institución</th><th data-k="mun">Ciudad</th><th data-k="mod">Modalidad</th><th data-k="precio">Precio semestre</th><th data-k="d2020">2020</th><th data-k="d2021">2021</th><th data-k="d2022">2022</th><th data-k="d2023">2023</th><th data-k="d2024">2024</th></tr></thead><tbody>
@@ -417,22 +418,8 @@ ${ESP.map(r=>`<tr class="${r.uao?'uao-row':''}"><td>${esc(title(r.prog))}</td><t
 </tbody></table></div>
 <p class="note">Incluye las ${ESP.length} especializaciones de nivel nacional (oferta actual de la UAO resaltada). La fuente SNIES usada aquí no trae fecha de resolución de registro calificado por programa, por lo que esa columna no se incluye.</p></div></section>`);
 
-/* E · Saturación */
-P.push(`<section id="s-satur">${head('E','Benchmark numérico · Regional','ben','Saturación · Demanda vs. Oferta','Familias detectadas dentro de las especializaciones regionales, ordenadas por número de programas (oferta).')}
-<div class="card"><h3 class="h">Programas por familia (regional)</h3>
-${barlist(REGFAM.map((f,i)=>({label:title(f.fam)+(f.dem!=null?' · dem. '+Math.round(f.dem):' · dem. n/d'),v:f.n,uao:UAO_TOK.has(f.fam)})),'wine')}
-${insight('gold','🧩',`<p>Casi todas las familias tienen 1–2 programas → <b>segmento poco saturado</b>. El clúster de <b>animación digital</b> es el más poblado; <b>diseño de experiencias</b> (donde se ubicaría la UAO) tiene oferta mínima. La demanda regional es prácticamente inexistente, por lo que la lectura sólida es la de <b>oferta</b>.</p>`)}</div></section>`);
-
-/* F · Oferta Nacional */
-P.push(`<section id="s-nac">${head('F','Denominación · Nacional','den','Oferta Nacional','Universo semántico completo: especializaciones, maestrías y doctorados de todo el país. Sirve para leer cómo se nombra el campo, no para comparar cifras.')}
-<div class="grid grid-2">
-<div class="card"><h3 class="h">Composición por nivel</h3>${barlist(objToEntries(nivDist),'wine')}</div>
-<div class="card"><h3 class="h">Distribución territorial</h3>${barlist(objToEntries(depNac).slice(0,8),'gold')}
-${insight('blue','🗺️',`<p><b>${depNac[0].label}</b> concentra ${Math.round(100*depNac[0].value/DATA_NAC.length)}% de la oferta; el ${REGION_NAME} es mercado secundario, lo que refuerza el espacio regional para la UAO.</p>`)}</div>
-</div></section>`);
-
-/* G · Descomposición */
-P.push(`<section id="s-denom">${head('G','Denominación · Nacional','den','Descomposición de la Denominación','¿Qué tan común, emergente o diferenciador es cada concepto de "Diseño · Experiencias · Digitales · Avanzadas"?')}
+/* F · Descomposición + Familias Semánticas */
+P.push(`<section id="s-denom">${head('F','Denominación · Nacional','den','Descomposición de la Denominación','¿Qué tan común, emergente o diferenciador es cada concepto de "Diseño · Experiencias · Digitales · Avanzadas"?')}
 <div class="card"><h3 class="h">Concepto por nivel académico</h3>
 <table><thead><tr><th>Concepto</th><th>Programas</th><th>% oferta</th><th>Especializ.</th><th>Maestría</th><th>Doctorado</th><th>Lectura</th></tr></thead><tbody>
 ${CONCEPTS.map(c=>{const b=c.pct>=25?'<span class="badge badge-warn">Frecuente</span>':c.pct>=8?'<span class="badge badge-slate">Común</span>':'<span class="badge badge-good">Diferenciador</span>';return `<tr><td><b>${c.concept}</b></td><td>${c.tot}</td><td>${c.pct}%</td><td>${c.esp}</td><td>${c.mae}</td><td>${c.doc}</td><td>${b}</td></tr>`;}).join('')}
@@ -443,12 +430,17 @@ ${barlist([{label:'Usan "Diseño" + "Experiencia(s)"',v:comboDE.length},{label:'
 ${insight(comboAll.length<=1?'good':'wine',comboAll.length<=1?'🌱':'⚠️',`<p>${comboAll.length<=1?'La combinación exacta es <b>emergente/rara</b>: casi no hay competencia con esa fórmula precisa.':'La combinación exacta ya aparece en el mercado: no es totalmente inédita.'}</p>`)}</div>
 <div class="card"><h3 class="h">Análisis del término "Avanzadas"</h3>
 <div class="kpi c-gold" style="text-align:left;border-top:none;padding:0"><div class="val" style="font-size:40px">${CONCEPTS[3].tot}</div><div class="foot">programas en toda la oferta nacional usan "avanzad*"</div></div>
-${insight('gold','🏷️',`<p><b>Función descriptiva, no diferenciadora.</b> "Avanzadas" casi no se usa como calificador (${CONCEPTS[3].tot}/${DATA_NAC.length}). Aporta promesa de nivel, pero no crea categoría ni ancla búsqueda: su valor es de <b>posicionamiento percibido</b>.</p>`)}</div>
-</div></section>`);
+${insight('gold','🏷️',`<p><b>Función descriptiva, no diferenciadora.</b> "Avanzadas" no es un término utilizado (${CONCEPTS[3].tot}/${DATA_NAC.length}). Aporta promesa de nivel, pero no crea categoría ni ancla búsqueda: su valor es de <b>posicionamiento percibido</b>.</p>`)}</div>
+</div>
+<div class="card" style="margin-top:16px"><h3 class="h">Familias léxicas del campo (nacional)</h3>
+${barlist(FAMNAC.slice(0,10).map(f=>({label:title(f.fam)+(UAO_TOK.has(f.fam)?' (término UAO)':''),v:f.n,uao:UAO_TOK.has(f.fam),color:UAO_TOK.has(f.fam)?'wine':'slate'})),'slate')}
+<p class="note">Familias construidas por término distintivo dominante (≥2 programas comparten el término), sin listas manuales.</p>
+${insight('blue','🧬',`<p>El mercado gravita hacia <b>${title(FAMNAC[0].fam)}</b> y ${title(FAMNAC[1].fam)}. La denominación UAO se apoya en <b>${[...UAO_TOK].filter(t=>FAMNAC.find(f=>f.fam===t)).map(title).join(', ')||'conceptos transversales'}</b>: familias reconocibles pero no saturadas por una sola fórmula.</p>`)}</div>
+</section>`);
 
-/* H · Palabras Clave */
+/* G · Palabras Clave */
 const cloud=KW1.slice(0,32),cmax=cloud[0].v,cmin=cloud[cloud.length-1].v;
-P.push(`<section id="s-kw">${head('H','Denominación · Nacional','den','Palabras Clave','Extracción dinámica sobre las denominaciones nacionales: limpieza, normalización y stopwords. En vino, términos de la denominación UAO.')}
+P.push(`<section id="s-kw">${head('G','Denominación · Nacional','den','Palabras Clave','Extracción dinámica sobre las denominaciones nacionales: limpieza, normalización y stopwords. En vino, términos de la denominación UAO.')}
 <div class="card"><h3 class="h">Nube de conceptos dominantes</h3>
 <div class="cloud">${cloud.map(w=>{const sz=(12.5+11.5*(w.v-cmin)/((cmax-cmin)||1)).toFixed(1);return `<span class="${UAO_TOK.has(w.k)?'uao':''}" style="font-size:${sz}px">${esc(w.k)}</span>`;}).join('')}</div></div>
 <div class="grid grid-3" style="margin-top:16px">
@@ -457,36 +449,18 @@ P.push(`<section id="s-kw">${head('H','Denominación · Nacional','den','Palabra
 <div class="card"><h3 class="h">Top trigramas</h3>${barlist(KW3.slice(0,10).map(w=>({label:w.k,v:w.v})),'slate')}</div>
 </div></section>`);
 
-/* I · Familias */
-P.push(`<section id="s-fam">${head('I','Denominación · Nacional','den','Familias Semánticas','Agrupaciones detectadas automáticamente a partir de los términos ancla más frecuentes del corpus (no impuestas).')}
-<div class="card"><h3 class="h">Familias léxicas del campo (nacional)</h3>
-${barlist(FAMNAC.slice(0,10).map(f=>({label:title(f.fam)+(UAO_TOK.has(f.fam)?' (término UAO)':''),v:f.n,uao:UAO_TOK.has(f.fam),color:UAO_TOK.has(f.fam)?'wine':'slate'})),'slate')}
-<p class="note">Familias construidas por término distintivo dominante (≥2 programas comparten el término), sin listas manuales.</p>
-${insight('blue','🧬',`<p>El mercado gravita hacia <b>${title(FAMNAC[0].fam)}</b> y ${title(FAMNAC[1].fam)}. La denominación UAO se apoya en <b>${[...UAO_TOK].filter(t=>FAMNAC.find(f=>f.fam===t)).map(title).join(', ')||'conceptos transversales'}</b>: familias reconocibles pero no saturadas por una sola fórmula.</p>`)}</div></section>`);
-
-/* J · Similitud */
+/* H · Similitud */
 function simTable(rows,regional){return `<div class="table-scroll"><table><thead><tr><th>#</th><th>Programa</th><th>Institución</th><th>${regional?'Depto.':'Nivel'}</th><th>Jaccard</th><th>TF-IDF</th><th>N-gram</th><th>Combinada</th><th>Coincidencias</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(title(r.prog))}</b></td><td>${esc(title(r.inst))}</td><td>${regional?esc(r.dep||''):r.nivel}</td><td>${(r.jt*100).toFixed(0)}%</td><td>${(r.cs*100).toFixed(0)}%</td><td>${(r.jn*100).toFixed(0)}%</td><td><b>${(r.comp*100).toFixed(0)}%</b></td><td style="color:#92400e">${r.shared.map(esc).join(', ')||'—'}</td></tr>`).join('')}</tbody></table></div>`;}
-P.push(`<section id="s-sim">${head('J','Denominación · Nacional','den','Similitud de la Denominación','"${esc(UAO_PROP.prog)}" comparada mediante Jaccard (tokens), coseno TF-IDF y n-gramas de caracteres. La combinada promedia las tres.')}
+P.push(`<section id="s-sim">${head('H','Denominación · Nacional','den','Similitud de la Denominación','"${esc(UAO_PROP.prog)}" comparada mediante Jaccard (tokens), coseno TF-IDF y n-gramas de caracteres. La combinada promedia las tres.')}
 ${insight(SIM_NAC[0].comp>=.5?'wine':'blue','🎯',`<p><b>Hallazgo central.</b> El programa más parecido a nivel nacional es <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}, ${SIM_NAC[0].dep}) con <b>${(SIM_NAC[0].comp*100).toFixed(0)}%</b> de similitud combinada. ${SIM_NAC[0].shared.length>=3?'Comparte casi todo el núcleo conceptual ("'+SIM_NAC[0].shared.join('", "')+'"); la propuesta se distingue por "Avanzadas".':''}</p>`)}
 <div class="card"><h3 class="h">Ranking nacional de similitud (Top 12)</h3><p class="small" style="margin-bottom:10px">Incluye especializaciones, maestrías y doctorados.</p>${simTable(SIM_NAC.slice(0,12))}</div>
-<div class="card" style="margin-top:16px"><h3 class="h">Ranking específico entre especializaciones (Top 10)</h3>${simTable(SIM_ESP.slice(0,10))}</div>
-<div class="card" style="margin-top:16px"><h3 class="h">Similitud dentro del ${REGION_NAME}</h3><p class="small" style="margin-bottom:10px">Solo especializaciones de los 6 departamentos (excl. UAO).</p>${simTable(SIM_REG.slice(0,8),true)}</div>
 </section>`);
 
-/* K · Oportunidades */
-const lowSat=FAMNAC.filter(f=>f.n<=2&&f.fam!=='otros').slice(0,6);
-P.push(`<section id="s-oport">${head('K','Síntesis','syn','Oportunidades Estratégicas','Detectadas automáticamente a partir de baja oferta, familias emergentes y conceptos poco utilizados.')}
-<div class="card">
-${insight('good','🎯',`<p><b>Nichos territoriales.</b> Cauca, Nariño y Risaralda no registran especializaciones del campo → mercados abiertos, especialmente para modalidad híbrida. Fuera de ${geoDist[0]?.label}, la oferta regional es casi nula.</p>`)}
-${insight('gold','🧩',`<p><b>Familias poco saturadas.</b> ${lowSat.map(f=>title(f.fam)).join(', ')} — conceptos con ≤2 programas nacionales.</p>`)}
-${insight('blue','🏷️',`<p><b>Diferenciadores disponibles.</b> "Avanzadas" casi no se usa (${CONCEPTS[3].tot}/${DATA_NAC.length}); la fórmula "Diseño de Experiencias Digitales" tiene solo ${comboAll.length} ocurrencia(s) nacional(es). Anclar "experiencias" a un vertical (inmersivas, de servicio, de producto) o sumar un término emergente (IA, inmersivo) eleva la diferenciación sin perder claridad.</p>`)}
-</div></section>`);
-
-/* L · Diagnóstico */
+/* I · Diagnóstico */
 const reco=SIM_NAC[0].comp>=.55?['Mantener con ajustes menores',`El núcleo conceptual es adecuado y regionalmente poco saturado, pero existe un programa nacional casi homónimo ("${title(SIM_NAC[0].prog)}"). Se recomienda ajustar el calificador para elevar la diferenciación —anclando "experiencias" a un vertical o sumando un término emergente— conservando la claridad de mercado.`]
   :DIFF>=60?['Mantener denominación','La denominación es clara y suficientemente diferenciada; el segmento regional está poco saturado.']
   :['Revisar denominación','La similitud con la oferta existente es alta; conviene reforzar el elemento distintivo antes de registrar.'];
-P.push(`<section id="s-diag">${head('L','Síntesis','syn','Diagnóstico Ejecutivo','Fortalezas, debilidades, oportunidades y riesgos, con recomendación sustentada.')}
+P.push(`<section id="s-diag">${head('I','Síntesis','syn','Diagnóstico Ejecutivo','Fortalezas, debilidades, oportunidades y riesgos, con recomendación sustentada.')}
 <div class="diag-grid">
 <div class="diag-box diag-f"><h4>Fortalezas</h4><ul>
 <li>Segmento regional de especialización <b>poco saturado</b> (${BENCH.length} competidoras).</li>
@@ -509,20 +483,19 @@ P.push(`<section id="s-diag">${head('L','Síntesis','syn','Diagnóstico Ejecutiv
 <div class="reco"><div class="rl">Recomendación al Comité Curricular</div><div class="rv">${reco[0]}</div><div class="rd">${reco[1]}</div></div>
 </section>`);
 
-/* M · Conclusiones */
-const QA=[
-['¿Qué tan diferenciada es la denominación a nivel nacional?',`Diferenciación <b>media</b> (índice ${DIFF}/100): núcleo común, fórmula completa poco frecuente.`],
-['¿Y frente a especializaciones?',`La especialización más parecida alcanza ${(SIM_ESP[0].comp*100).toFixed(0)}% de similitud combinada.`],
-['¿Y dentro del Suroccidente + Eje Cafetero?',`Alta a nivel de nombre (${(SIM_REG[0]?SIM_REG[0].comp*100:0).toFixed(0)}% la más cercana), pero con baja saturación de oferta.`],
-['¿Qué conceptos están saturados?',`"${title(FAMNAC[0].fam)}" y "${title(FAMNAC[1].fam)}" concentran la oferta; "digital" es transversal.`],
-['¿Qué conceptos son oportunidad?',`"Experiencias" ancladas a un vertical y calificadores emergentes; "avanzadas" queda libre pero aporta poco.`],
-['¿Quiénes son los principales referentes?',`${SIM_NAC.slice(0,3).map(r=>title(r.inst)).join(', ')}.`],
-['¿Qué tan competitiva es la oferta regional?',`Poco densa: ${BENCH.length} especializaciones externas, concentradas en ${geoDist[0]?.label}.`],
-['¿Existe espacio para la propuesta UAO?',`Sí, por modalidad híbrida y por departamentos sin competencia directa.`],
-['¿Cuál es el principal riesgo?',`La colisión de nombre con "${title(SIM_NAC[0].prog)}" (${title(SIM_NAC[0].inst)}).`],
-['¿Cuál es la recomendación final?',`<b>${reco[0]}</b>.`]];
-P.push(`<section id="s-concl">${head('M','Síntesis','syn','Conclusiones','Síntesis ejecutiva dirigida al Comité Curricular.')}
-<div class="card concl">${QA.map((q,i)=>`<div class="ci"><div class="n">${i+1}</div><div><div class="qx">${q[0]}</div><div class="ax">${q[1]}</div></div></div>`).join('')}</div></section>`);
+/* J · Conclusiones (incluye antigua sección de Oportunidades Estratégicas) */
+const lowSat=FAMNAC.filter(f=>f.n<=2&&f.fam!=='otros').slice(0,6);
+P.push(`<section id="s-concl">${head('J','Síntesis','syn','Conclusiones','Síntesis ejecutiva dirigida al Comité Curricular.')}
+<div class="card">
+${insight('blue','🎯',`<p><b>Diferenciación de la denominación.</b> Índice de diferenciación <b>${DIFF}/100</b> a nivel nacional: núcleo conceptual común, pero la fórmula completa es poco frecuente. Frente a especializaciones, la más parecida alcanza <b>${(SIM_ESP[0].comp*100).toFixed(0)}%</b> de similitud combinada; el referente más cercano en general es <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}). Principales referentes: ${SIM_NAC.slice(0,3).map(r=>title(r.inst)).join(', ')}.</p>`)}
+${insight('wine','⚠️',`<p><b>Riesgo principal.</b> Colisión de nombre con "${title(SIM_NAC[0].prog)}" (${title(SIM_NAC[0].inst)}). Dentro del Suroccidente + Eje Cafetero la similitud de nombre también es alta (${(SIM_REG[0]?SIM_REG[0].comp*100:0).toFixed(0)}% con la más cercana), aunque la saturación de oferta regional es baja.</p>`)}
+${insight('good','🌱',`<p><b>Oferta regional y espacio para la propuesta.</b> Oferta poco densa: ${BENCH.length} especializaciones externas, concentradas en ${geoDist[0]?.label}. Sí existe espacio para la propuesta UAO, por modalidad híbrida y por departamentos sin competencia directa.</p>`)}
+${insight('gold','🧩',`<p><b>Conceptos saturados y de oportunidad.</b> "${title(FAMNAC[0].fam)}" y "${title(FAMNAC[1].fam)}" concentran la oferta nacional ("digital" es transversal). "Experiencias" ancladas a un vertical y calificadores emergentes son oportunidad; "avanzadas" queda libre pero aporta poco valor diferenciador.</p>`)}
+${insight('good','🎯',`<p><b>Nichos territoriales.</b> Cauca, Nariño y Risaralda no registran especializaciones del campo → mercados abiertos, especialmente para modalidad híbrida. Fuera de ${geoDist[0]?.label}, la oferta regional es casi nula.</p>`)}
+${insight('gold','🧩',`<p><b>Familias poco saturadas.</b> ${lowSat.map(f=>title(f.fam)).join(', ')} — conceptos con ≤2 programas nacionales.</p>`)}
+${insight('blue','🏷️',`<p><b>Diferenciadores disponibles.</b> "Avanzadas" casi no se usa (${CONCEPTS[3].tot}/${DATA_NAC.length}); la fórmula "Diseño de Experiencias Digitales" tiene solo ${comboAll.length} ocurrencia(s) nacional(es). Anclar "experiencias" a un vertical (inmersivas, de servicio, de producto) o sumar un término emergente (IA, inmersivo) eleva la diferenciación sin perder claridad.</p>`)}
+${insight('wine','✅',`<p><b>Recomendación final.</b> ${reco[0]}: ${reco[1]}</p>`)}
+</div></section>`);
 
 document.getElementById('wrap').innerHTML=P.join('');
 document.getElementById('hero-meta').innerHTML=[
@@ -549,17 +522,21 @@ function makeSortableTable(table){if(!table)return{resort(){}};let cur={k:null,d
   const depBtn=document.getElementById('rank-dep-btn'),depPanel=document.getElementById('rank-dep-panel');
   if(!t||!levelSelect||!body)return;
   const sorter=makeSortableTable(t);
-  function selectedDeps(){if(!depPanel)return null;const all=depPanel.querySelectorAll('input'),checked=[...depPanel.querySelectorAll('input:checked')];return checked.length===all.length?null:checked.map(i=>i.value);}
+  function deptCbs(){return depPanel?[...depPanel.querySelectorAll('.dep-item')]:[];}
+  function selectedDeps(){const all=deptCbs();if(!all.length)return null;const checked=all.filter(i=>i.checked);return checked.length===all.length?null:checked.map(i=>i.value);}
   function refresh(){body.innerHTML=rankBody(levelSelect.value,selectedDeps());sorter.resort();}
   levelSelect.addEventListener('change',refresh);
   if(depBtn&&depPanel){
+    const allCb=document.getElementById('rank-dep-all');
     depBtn.addEventListener('click',e=>{e.stopPropagation();depPanel.hidden=!depPanel.hidden;});
     document.addEventListener('click',e=>{if(!depPanel.hidden&&!depPanel.contains(e.target)&&e.target!==depBtn)depPanel.hidden=true;});
-    depPanel.querySelectorAll('input').forEach(inp=>inp.addEventListener('change',()=>{
-      const all=depPanel.querySelectorAll('input'),checked=depPanel.querySelectorAll('input:checked');
+    function updateUI(){
+      const all=deptCbs(),checked=all.filter(i=>i.checked);
       depBtn.textContent=(checked.length===all.length?'Todos los departamentos':checked.length===0?'Ningún departamento':checked.length+' departamentos')+' ▾';
-      refresh();
-    }));
+      if(allCb){allCb.checked=checked.length===all.length;allCb.indeterminate=checked.length>0&&checked.length<all.length;}
+    }
+    deptCbs().forEach(inp=>inp.addEventListener('change',()=>{updateUI();refresh();}));
+    if(allCb){allCb.addEventListener('change',()=>{deptCbs().forEach(inp=>inp.checked=allCb.checked);allCb.indeterminate=false;updateUI();refresh();});}
   }
 })();
 
