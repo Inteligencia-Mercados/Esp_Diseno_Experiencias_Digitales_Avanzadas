@@ -434,8 +434,8 @@ ${insight('gold','🏷️',`<p><b>Función descriptiva, no diferenciadora.</b> "
 </div>
 <div class="card" style="margin-top:16px"><h3 class="h">Familias léxicas del campo (nacional)</h3>
 ${barlist(FAMNAC.slice(0,10).map(f=>({label:title(f.fam)+(UAO_TOK.has(f.fam)?' (término UAO)':''),v:f.n,uao:UAO_TOK.has(f.fam),color:UAO_TOK.has(f.fam)?'wine':'slate'})),'slate')}
-<p class="note">Familias construidas por término distintivo dominante (≥2 programas comparten el término), sin listas manuales.</p>
-${insight('blue','🧬',`<p>El mercado gravita hacia <b>${title(FAMNAC[0].fam)}</b> y ${title(FAMNAC[1].fam)}. La denominación UAO se apoya en <b>${[...UAO_TOK].filter(t=>FAMNAC.find(f=>f.fam===t)).map(title).join(', ')||'conceptos transversales'}</b>: familias reconocibles pero no saturadas por una sola fórmula.</p>`)}</div>
+<p class="note">Familias construidas por término distintivo dominante (≥2 programas comparten el término).</p>
+${insight('blue','🧬',`<p>El mercado está encaminado a términos como <b>${title(FAMNAC[0].fam)}</b> y ${title(FAMNAC[1].fam)}.</p>`)}</div>
 </section>`);
 
 /* G · Palabras Clave */
