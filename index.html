@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Benchmark — Especialización en Diseño de Experiencias Digitales Avanzadas | UAO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#8C0F13; --accent:#C0151A; --sidebar-bg:#111111;
+  --bg:#f0f2f5; --surface:#ffffff; --ink:#1a1a2e; --ink-soft:#6b7280; --ink-faint:#8A9099;
+  --line:#e5e7eb; --shadow:0 2px 14px rgba(0,0,0,0.07);
+  --blue:#1d4ed8; --blue-pale:#dbeafe; --purple:#7c3aed; --purple-pale:#f3e8ff;
+  --wine:var(--primary); --wine-pale:#fee2e2;
+  --gold:#d97706; --gold-pale:#fef3c7; --slate:#475569; --slate-pale:#eef1f5;
+  --good:#15803d; --good-pale:#dcfce7; --warn:#991b1b; --warn-pale:#fee2e2;
+  --disp:"Barlow Condensed","Arial Narrow",sans-serif; --body:"Barlow","Segoe UI",Tahoma,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);line-height:1.5;font-size:14px}
+h1,h2,h3,h4{font-family:var(--disp)}
+a{color:inherit}
+.layout{display:flex;align-items:stretch;min-height:100vh}
+.main{flex:1;min-width:0;padding-top:56px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 32px 80px}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:256px;right:0;height:56px;background:#fff;z-index:60;
+  display:flex;align-items:center;justify-content:space-between;padding:0 26px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+#topbar .tt{font-family:var(--disp);font-size:18px;font-weight:800;color:var(--primary);text-transform:uppercase;line-height:1.05}
+#topbar .tt span{color:var(--ink-soft);font-weight:600;font-size:11.5px;text-transform:none;margin-left:10px;font-family:var(--body)}
+#btn-pdf{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border:none;
+  padding:9px 18px;border-radius:7px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--body);white-space:nowrap}
+#btn-pdf:hover{filter:brightness(1.08)}
+@media(max-width:900px){#topbar{left:0}}
+
+/* HERO */
+.hero{background:#6E1116;color:#fff;padding:40px 32px 34px;position:relative;overflow:hidden}
+.hero-inner{max-width:1160px;margin:0 auto}
+.eyebrow{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;opacity:.85;font-weight:600}
+.hero h1{font-family:var(--disp);font-size:34px;font-weight:800;margin-top:6px;line-height:1.1;max-width:860px;text-transform:uppercase}
+.hero p.sub{margin-top:8px;font-size:13.5px;color:#f2dcdc;opacity:.92;max-width:760px}
+.hero-meta{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.18);padding-top:16px}
+.hero-meta div{font-size:12px;color:#f2dcdc}
+.hero-meta b{display:block;font-family:var(--disp);font-size:18px;color:#fff;font-weight:700}
+
+/* SIDENAV */
+.sidenav{width:256px;min-width:256px;background:var(--sidebar-bg);color:#fff;position:sticky;top:0;align-self:flex-start;
+  height:100vh;overflow-y:auto;z-index:70;display:flex;flex-direction:column}
+.sidenav-brand{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidenav-brand .logo-name{font-family:var(--disp);font-size:16px;font-weight:800;text-transform:uppercase;line-height:1.15}
+.sidenav-brand .logo-sub{font-size:11px;color:#9ca3af;margin-top:4px}
+.sidenav-brand .year-badge{display:inline-block;margin-top:10px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.sidenav-nav{flex:1;padding:12px 0}
+.sidenav-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8b8b93;font-weight:700;margin:14px 20px 6px}
+.sidenav-label.den{color:#d9a441}.sidenav-label.ben{color:#7fb0c7}
+.sidenav a{display:flex;align-items:center;gap:10px;padding:10px 20px;font-size:13px;color:#c7c7cc;text-decoration:none;font-weight:500;
+  border-left:3px solid transparent;transition:all .15s ease}
+.sidenav a .tag{font-size:14px;width:20px;flex-shrink:0;text-align:center}
+.sidenav a:hover,.sidenav a.active{background:rgba(192,21,26,.12);color:#fff;border-left-color:var(--accent)}
+.sidenav-foot{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1);font-size:10.5px;color:#8b8b93;line-height:1.6}
+@media(max-width:900px){
+  .layout{flex-direction:column}
+  .sidenav{position:relative;width:100%;min-width:0;height:auto;top:0;flex-direction:row;align-items:center;gap:4px;overflow-x:auto}
+  .sidenav-brand,.sidenav-label,.sidenav-foot{display:none}
+  .sidenav-nav{display:flex;padding:8px 10px}
+  .sidenav a{white-space:nowrap;border-left:none;border-bottom:2px solid transparent;padding:10px 12px}
+  .sidenav a.active{border-left:none;border-bottom-color:var(--accent)}
+}
+
+/* SECTIONS */
+section{padding-top:34px;scroll-margin-top:64px}
+.section-head{margin-bottom:20px;border-bottom:2px solid var(--line);padding-bottom:12px}
+.section-tag{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.section-tag.den{color:var(--gold)}.section-tag.ben{color:var(--blue)}.section-tag.syn{color:var(--slate)}
+.section-title{font-family:var(--disp);font-size:26px;font-weight:800;margin-top:2px;color:var(--primary);text-transform:uppercase}
+.section-q{font-size:13px;color:var(--ink-soft);margin-top:6px;max-width:820px}
+
+.card{background:var(--surface);border-radius:10px;box-shadow:var(--shadow);padding:20px 22px}
+.grid{display:grid;gap:16px}
+.grid-4{grid-template-columns:repeat(4,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+
+.kpi{padding:18px 16px;text-align:center;border-top:4px solid var(--primary)}
+.kpi.c-blue{border-top-color:var(--blue)}.kpi.c-good{border-top-color:var(--good)}
+.kpi.c-gold{border-top-color:var(--gold)}.kpi.c-purple{border-top-color:var(--purple)}
+.kpi .lbl{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.kpi .val{font-family:var(--disp);font-size:34px;margin-top:6px;color:var(--primary);font-weight:800;line-height:1}
+.kpi.c-blue .val{color:var(--blue)}.kpi.c-good .val{color:var(--good)}.kpi.c-gold .val{color:var(--gold)}.kpi.c-purple .val{color:var(--purple)}
+.kpi .foot{font-size:11.5px;color:var(--ink-soft);margin-top:6px}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;
+  padding:9px 10px;border-bottom:2px solid var(--line);cursor:pointer;user-select:none;background:#fafafa;font-family:var(--disp)}
+th:hover{color:var(--primary)}
+th.sorted::after{content:" ▾";font-size:9px}th.sorted.asc::after{content:" ▴";font-size:9px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--ink)}
+tr.uao-row td{background:#fefce8;font-weight:700;color:var(--primary)}
+tbody tr:hover td{background:#f8fafc}tr.uao-row:hover td{background:#fef9c3}
+.na{color:var(--ink-faint);font-style:italic}
+.table-scroll{max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:6px}
+.table-scroll table{font-size:12px}.table-scroll thead th{position:sticky;top:0;z-index:1}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
+.badge-wine{background:var(--wine-pale);color:var(--primary)}.badge-gold{background:var(--gold-pale);color:#92400e}
+.badge-good{background:var(--good-pale);color:var(--good)}.badge-warn{background:var(--warn-pale);color:var(--warn)}
+.badge-slate{background:var(--slate-pale);color:var(--slate)}.badge-blue{background:var(--blue-pale);color:var(--blue)}
+
+.barlist{display:flex;flex-direction:column;gap:10px}
+.barrow{display:grid;grid-template-columns:170px 1fr 52px;align-items:center;gap:10px;font-size:12px}
+.barrow .label{color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bartrack{background:var(--slate-pale);border-radius:3px;height:15px;position:relative;overflow:hidden}
+.barfill{height:100%;border-radius:3px;background:var(--slate)}
+.barfill.wine{background:var(--primary)}.barfill.gold{background:var(--gold)}.barfill.blue{background:var(--blue)}
+.barrow .num{text-align:right;font-weight:700;color:var(--ink)}
+.barrow.uao .label{color:var(--primary);font-weight:700}.barrow.uao .barfill{background:var(--accent)}
+
+.cloud{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px;padding:16px 10px}
+.cloud span{display:inline-flex;align-items:center;white-space:nowrap;line-height:1;color:var(--slate);font-weight:700;
+  background:var(--slate-pale);padding:6px 12px;border-radius:20px}
+.cloud span.uao{color:#fff;background:var(--wine)}
+
+.insight{display:flex;gap:14px;padding:14px 16px;border-radius:8px;margin-bottom:12px;align-items:flex-start}
+.insight:last-child{margin-bottom:0}
+.insight.blue{background:var(--blue-pale);border-left:4px solid var(--blue)}
+.insight.good{background:var(--good-pale);border-left:4px solid var(--good)}
+.insight.gold{background:var(--gold-pale);border-left:4px solid var(--gold)}
+.insight.wine{background:var(--wine-pale);border-left:4px solid var(--primary)}
+.insight.slate{background:var(--slate-pale);border-left:4px solid var(--slate)}
+.insight .ico{font-size:19px;flex-shrink:0;margin-top:1px}
+.insight .content p{font-size:12.5px;line-height:1.55;color:var(--ink)}
+.insight .content p+p{margin-top:6px}
+
+.diag-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.diag-grid{grid-template-columns:1fr}}
+.diag-box{border-radius:8px;padding:16px 18px}
+.diag-box h4{font-family:var(--disp);font-size:15px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;font-weight:700}
+.diag-box ul{padding-left:18px;font-size:12.5px;color:var(--ink)}.diag-box li{margin-bottom:5px}
+.diag-f{background:var(--good-pale)}.diag-f h4{color:var(--good)}
+.diag-d{background:var(--warn-pale)}.diag-d h4{color:var(--warn)}
+.diag-o{background:var(--gold-pale)}.diag-o h4{color:#92400e}
+.diag-r{background:var(--wine-pale)}.diag-r h4{color:var(--primary)}
+
+.reco{background:linear-gradient(135deg,#1a1a1a,#2b2b2b);color:#fff;border-radius:10px;padding:20px 24px;margin-top:16px}
+.reco .rl{font-family:var(--disp);letter-spacing:1.5px;text-transform:uppercase;font-size:12px;color:#9ca3af;font-weight:700}
+.reco .rv{font-family:var(--disp);font-size:25px;font-weight:800;margin:6px 0 8px;text-transform:uppercase}
+.reco .rd{font-size:13px;color:#d6d6da;max-width:840px;line-height:1.65}
+
+.concl .ci{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.concl .ci:last-child{border-bottom:none}
+.concl .ci .n{font-family:var(--disp);font-weight:800;color:var(--accent);font-size:22px;flex:none;width:30px;text-align:center}
+.concl .ci .qx{font-weight:700;color:var(--ink);font-size:13px}
+.concl .ci .ax{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+
+.statline{display:grid;grid-template-columns:1fr auto;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.statline:last-child{border-bottom:none}.statline .k{color:var(--ink-soft)}.statline .v{font-weight:700}
+.statline.uao{color:var(--primary)}.statline.uao .k{color:var(--primary)}
+
+h3.h{font-family:var(--disp);font-size:17px;font-weight:700;margin-bottom:12px;color:var(--primary);text-transform:uppercase}
+.note{font-size:11.5px;color:var(--ink-faint);margin-top:8px}
+.small{font-size:12px;color:var(--ink-soft)}
+.legend{display:flex;gap:14px;font-size:11px;color:var(--ink-soft);margin-top:10px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+footer{margin-top:60px;padding:24px 32px;text-align:center;font-size:11px;color:var(--ink-faint);border-top:1px solid var(--line)}
+
+@media print{
+  .sidenav,#topbar,#btn-pdf{display:none!important}
+  .main{margin-left:0!important;padding-top:0!important}
+  .card{box-shadow:none;break-inside:avoid;border:1px solid var(--line)}
+  .hero{background-color:#6E1116!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .kpi,.insight,.diag-box,.reco,.badge,.barfill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  section{page-break-inside:avoid;padding-top:20px}
+  body{font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="sidenav" id="sidenav">
+  <div class="sidenav-brand">
+    <div class="logo-name">Diseño de Experiencias<br>Digitales Avanzadas</div>
+    <div class="logo-sub">Benchmark · UAO</div>
+    <span class="year-badge">2026</span>
+  </div>
+  <div class="sidenav-nav" id="nav">
+    <div class="sidenav-label">Contenido</div>
+    <a href="#s-exec" class="active"><span class="tag">🏠</span>A · Resumen Ejecutivo</a>
+    <a href="#s-uao"><span class="tag">🎓</span>B · Programa UAO</a>
+    <div class="sidenav-label ben">Benchmark numérico · Regional</div>
+    <a href="#s-bench"><span class="tag">📊</span>C · Benchmark Regional</a>
+    <a href="#s-demanda"><span class="tag">📈</span>D · Demanda</a>
+    <a href="#s-satur"><span class="tag">🧩</span>E · Saturación</a>
+    <div class="sidenav-label den">Denominación · Nacional</div>
+    <a href="#s-nac"><span class="tag">🗺️</span>F · Oferta Nacional</a>
+    <a href="#s-denom"><span class="tag">🔤</span>G · Descomposición</a>
+    <a href="#s-kw"><span class="tag">🔑</span>H · Palabras Clave</a>
+    <a href="#s-fam"><span class="tag">🧬</span>I · Familias Semánticas</a>
+    <a href="#s-sim"><span class="tag">🔁</span>J · Similitud</a>
+    <div class="sidenav-label syn">Síntesis</div>
+    <a href="#s-oport"><span class="tag">💡</span>K · Oportunidades</a>
+    <a href="#s-diag"><span class="tag">🎯</span>L · Diagnóstico</a>
+    <a href="#s-concl"><span class="tag">✅</span>M · Conclusiones</a>
+  </div>
+  <div class="sidenav-foot">Fuente: SNIES · MEN Colombia<br>Denominación: n=<span id="foot-nac">—</span> · Benchmark: n=<span id="foot-ben">—</span><br>Actualizado: 2026<br>Inteligencia de Mercados — UAO</div>
+</nav>
+
+<div class="main">
+  <div id="topbar">
+    <div class="tt">Benchmark — Nuevo Programa <span>Especialización en Diseño de Experiencias Digitales Avanzadas · UAO</span></div>
+    <button id="btn-pdf" onclick="window.print()">⬇ Descargar PDF Ejecutivo</button>
+  </div>
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Inteligencia de Mercados · UAO · Comité Curricular</div>
+      <h1>Especialización en Diseño de Experiencias Digitales Avanzadas</h1>
+      <p class="sub">Evaluación de la competitividad y diferenciación de la denominación propuesta: análisis léxico sobre la oferta nacional de posgrados y benchmark cuantitativo sobre las especializaciones del Suroccidente + Eje Cafetero.</p>
+      <div class="hero-meta" id="hero-meta"></div>
+    </div>
+  </div>
+  <div class="wrap" id="wrap"></div>
+  <footer>Elaborado por Inteligencia de Mercados · Dirección de Marketing — Universidad Autónoma de Occidente · 2026. Fuente primaria: SNIES (MEN Colombia). Documento de apoyo al Comité Curricular; no constituye registro oficial.</footer>
+</div>
+</div>
+
+<script>const RAW = {"nacional": [{"inst": "CORPORACION ESCUELA DE ARTES Y LETRAS", "prog": "ESPECIALIZACIÓN EN DISEÑO INTERACTIVO DIGITAL", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 4105559.0, "cred": 28.0, "periodos": 4.0, "snies": 108065, "reg": false, "dem": {"2020": 3.0, "2021": 2.0, "2022": 2.0, "2023": 2.0, "2024": null}, "uao": false}, {"inst": "CORPORACION ESCUELA DE ARTES Y LETRAS", "prog": "MAESTRIA EN  ILUSTRACIÓN", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 48.0, "periodos": 4.0, "snies": 107940, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "CORPORACION UNIFICADA NACIONAL DE EDUCACION SUPERIOR-CUN-", "prog": "ESPECIALIZACIÓN EN DISEÑO Y DESARROLLO DE VIDEOJUEGOS", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 28.0, "periodos": 2.0, "snies": 119032, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "CORPORACION UNIVERSITARIA AMERICANA", "prog": "ESPECIALIZACIÓN EN REALIDAD VIRTUAL APLICADA.", "nivel": "Especialización", "dep": "Atlántico", "mun": "Barranquilla", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 6450649.0, "cred": 28.0, "periodos": 2.0, "snies": 118164, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "CORPORACION UNIVERSITARIA TALLER CINCO CENTRO DE DISEÑO", "prog": "ESPECIALIZACIÓN EN ANIMACIÓN DE PERSONAJES 3D", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 10620000.0, "cred": 24.0, "periodos": 2.0, "snies": 117756, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "CORPORACION UNIVERSITARIA TALLER CINCO CENTRO DE DISEÑO", "prog": "ESPECIALIZACIÓN EN ANIMACIÓN DE PERSONAJES 3D", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 13278000.0, "cred": 24.0, "periodos": 2.0, "snies": 117755, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "CORPORACION UNIVERSITARIA TALLER CINCO CENTRO DE DISEÑO", "prog": "ESPECIALIZACIÓN EN ESCULTURA Y TEXTURA DIGITAL", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 13278000.0, "cred": 24.0, "periodos": 2.0, "snies": 118802, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "FUNDACION UNIVERSIDAD DE BOGOTA - JORGE TADEO LOZANO", "prog": "DOCTORADO EN DISEÑO, ARTE Y CIENCIA", "nivel": "Doctorado", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 10779000.0, "cred": 96.0, "periodos": 8.0, "snies": 111210, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "FUNDACION UNIVERSIDAD DE BOGOTA - JORGE TADEO LOZANO", "prog": "ESPECIALIZACIÓN EN DISEÑO Y CREACIÓN CON INTELIGENCIA ARTIFICIAL", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 6184000.0, "cred": 24.0, "periodos": 2.0, "snies": 116947, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "FUNDACION UNIVERSIDAD DE BOGOTA - JORGE TADEO LOZANO", "prog": "ESPECIALIZACION EN GERENCIA DE DISEÑO", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 8224000.0, "cred": 24.0, "periodos": 2.0, "snies": 7689, "reg": false, "dem": {"2020": 14.0, "2021": 22.0, "2022": 38.0, "2023": 20.0, "2024": 48.0}, "uao": false}, {"inst": "FUNDACION UNIVERSIDAD DE BOGOTA - JORGE TADEO LOZANO", "prog": "MAESTRÍA EN CREACIÓN Y DIRECCIÓN DE MEDIOS", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 36.0, "periodos": 3.0, "snies": 106132, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "FUNDACION UNIVERSIDAD DE BOGOTA - JORGE TADEO LOZANO", "prog": "MAESTRÍA EN GENERACIÓN Y GESTIÓN DE CONTENIDOS DIGITALES", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 9321000.0, "cred": 36.0, "periodos": 3.0, "snies": 107976, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "FUNDACION UNIVERSIDAD DE BOGOTA - JORGE TADEO LOZANO", "prog": "MAESTRÍA EN GESTIÓN DEL DISEÑO", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 48.0, "periodos": 4.0, "snies": 105463, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "FUNDACION UNIVERSIDAD DE BOGOTA - JORGE TADEO LOZANO", "prog": "MAESTRÍA EN GESTIÓN Y PRODUCCIÓN CULTURAL Y AUDIOVISUAL", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 9321000.0, "cred": 36.0, "periodos": 3.0, "snies": 106154, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "FUNDACION UNIVERSITARIA DEL AREA ANDINA", "prog": "ESPECIALIZACIÓN EN DIRECCIÓN Y PRODUCCIÓN DE CONTENIDOS AUDIOVISUALES", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 4550000.0, "cred": 28.0, "periodos": 2.0, "snies": 116245, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": 40.0}, "uao": false}, {"inst": "INSTITUCION UNIVERSITARIA - ITM", "prog": "MAESTRÍA EN ARTES DIGITALES", "nivel": "Maestría", "dep": "Antioquia", "mun": "Medellín", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": 10381800.0, "cred": 60.0, "periodos": 4.0, "snies": 104740, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "INSTITUCION UNIVERSITARIA - ITM", "prog": "MAESTRÍA EN DISEÑO", "nivel": "Maestría", "dep": "Antioquia", "mun": "Medellín", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": 10381800.0, "cred": 48.0, "periodos": 4.0, "snies": 116574, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "INSTITUCION UNIVERSITARIA EAM", "prog": "ESPECIALIZACIÓN EN DISEÑO DE EXPERIENCIA E INTERFAZ DE USUARIO", "nivel": "Especialización", "dep": "Quindío", "mun": "Armenia", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 28.0, "periodos": 2.0, "snies": 117781, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "INSTITUCIÓN UNIVERSITARIA PASCUAL BRAVO", "prog": "ESPECIALIZACIÓN EN DISEÑO DE EXPERIENCIAS DIGITALES", "nivel": "Especialización", "dep": "Antioquia", "mun": "Medellín", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": 9630000.0, "cred": 24.0, "periodos": 2.0, "snies": 117645, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "INSTITUTO DEPARTAMENTAL DE BELLAS ARTES", "prog": "ESPECIALIZACIÓN EN ANIMACIÓN DIGITAL", "nivel": "Especialización", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": null, "cred": 28.0, "periodos": 2.0, "snies": 118661, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "PONTIFICIA UNIVERSIDAD JAVERIANA", "prog": "ESPECIALIZACIÓN EN GERENCIA DE PROYECTOS DE DISEÑO", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 14106000.0, "cred": 24.0, "periodos": 2.0, "snies": 116400, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": 2.0}, "uao": false}, {"inst": "PONTIFICIA UNIVERSIDAD JAVERIANA", "prog": "MAESTRÍA EN CREACIÓN AUDIOVISUAL", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 16797692.0, "cred": 50.0, "periodos": 2.0, "snies": 104901, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "PONTIFICIA UNIVERSIDAD JAVERIANA", "prog": "ESPECIALIZACIÓN EN ANIMACIÓN DIGITAL", "nivel": "Especialización", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 24.0, "periodos": 2.0, "snies": 108745, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "PONTIFICIA UNIVERSIDAD JAVERIANA", "prog": "ESPECIALIZACIÓN EN DISEÑO DE EXPERIENCIAS EXPOSITIVAS", "nivel": "Especialización", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 8700000.0, "cred": 23.0, "periodos": 2.0, "snies": 119170, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "PONTIFICIA UNIVERSIDAD JAVERIANA", "prog": "MAESTRÍA EN COMUNICACIÓN Y CREACIÓN INTERACTIVA", "nivel": "Maestría", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 7950000.0, "cred": 36.0, "periodos": 3.0, "snies": 117187, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD AUTONOMA DE BUCARAMANGA-UNAB-", "prog": "ESPECIALIZACIÓN EN PRODUCCIÓN Y GESTIÓN DE PROYECTOS AUDIOVISUALES", "nivel": "Especialización", "dep": "Santander", "mun": "Bucaramanga", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 13866160.0, "cred": 22.0, "periodos": 2.0, "snies": 109859, "reg": false, "dem": {"2020": null, "2021": 5.0, "2022": 8.0, "2023": 5.0, "2024": 19.0}, "uao": false}, {"inst": "UNIVERSIDAD AUTONOMA DE OCCIDENTE", "prog": "ESPECIALIZACIÓN EN DISEÑO PUBLICITARIO EN CONTENIDOS DIGITALES", "nivel": "Especialización", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 6881000.0, "cred": 24.0, "periodos": 2.0, "snies": 110585, "reg": true, "dem": {"2020": null, "2021": null, "2022": 2022.0, "2023": 110.0, "2024": 44.0}, "uao": true}, {"inst": "UNIVERSIDAD DE ANTIOQUIA", "prog": "MAESTRÍA EN CREACIÓN Y ESTUDIOS AUDIOVISUALES", "nivel": "Maestría", "dep": "Antioquia", "mun": "Medellín", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": null, "cred": 48.0, "periodos": 2.0, "snies": 105944, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE BOYACA UNIBOYACA", "prog": "MAESTRÍA EN COMUNICACIÓN DIGITAL ESTRATÉGICA", "nivel": "Maestría", "dep": "Boyacá", "mun": "Tunja", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 5300000.0, "cred": 39.0, "periodos": 3.0, "snies": 116941, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE CALDAS", "prog": "DOCTORADO EN DISEÑO Y CREACION", "nivel": "Doctorado", "dep": "Caldas", "mun": "Manizales", "mod": "Presencial", "sector": "Oficial", "recon": "Acreditación de alta calidad", "precio": 12015500.0, "cred": 82.0, "periodos": 4.0, "snies": 55043, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE CALDAS", "prog": "MAESTRIA EN DISEÑO Y CREACION INTERACTIVA", "nivel": "Maestría", "dep": "Caldas", "mun": "Manizales", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": 11264500.0, "cred": 50.0, "periodos": 4.0, "snies": 52659, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE INVESTIGACION Y DESARROLLO - UDI", "prog": "MAESTRÍA EN GESTIÓN DEL DISEÑO", "nivel": "Maestría", "dep": "Santander", "mun": "Bucaramanga", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 9499315.0, "cred": 56.0, "periodos": 4.0, "snies": 106891, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE LA SABANA", "prog": "ESPECIALIZACIÓN EN DISEÑO Y DESARROLLO DE VIDEOJUEGOS", "nivel": "Especialización", "dep": "Cundinamarca", "mun": "Chía", "mod": "Presencial-Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 14113000.0, "cred": 24.0, "periodos": 2.0, "snies": 117067, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE LA SABANA", "prog": "MAESTRÍA EN INNOVACIÓN EN INDUSTRIAS AUDIOVISUALES", "nivel": "Maestría", "dep": "Cundinamarca", "mun": "Chía", "mod": "Presencial-Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 14112575.0, "cred": 36.0, "periodos": 3.0, "snies": 117080, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE LA SALLE", "prog": "MAESTRÍA EN DISEÑO DE EXPERIENCIA DEL USUARIO", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "A distancia", "sector": "Privado", "recon": "Registro calificado", "precio": 9325000.0, "cred": 47.0, "periodos": 3.0, "snies": 116450, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE LOS ANDES", "prog": "ESPECIALIZACION EN CREACION MULTIMEDIA", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 21.0, "periodos": 2.0, "snies": 7026, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE LOS ANDES", "prog": "ESPECIALIZACIÓN EN DESARROLLO DE VIDEOJUEGOS", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 16.0, "periodos": 3.0, "snies": 103101, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE LOS ANDES", "prog": "MAESTRÍA EN DISEÑO", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 22475760.0, "cred": 40.0, "periodos": 4.0, "snies": 102586, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE SAN BUENAVENTURA", "prog": "MAESTRÍA EN CREACIÓN DIGITAL Y PRODUCCIÓN DE VIDEOJUEGOS", "nivel": "Maestría", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Híbrida (Presencial-Virtual)", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 42.0, "periodos": 3.0, "snies": 118890, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DE SAN BUENAVENTURA", "prog": "MAESTRÍA EN PROYECTO URBANO", "nivel": "Maestría", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 10651000.0, "cred": 44.0, "periodos": 4.0, "snies": 105511, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DEL MAGDALENA - UNIMAGDALENA", "prog": "MAESTRÍA EN ESCRITURAS AUDIOVISUALES", "nivel": "Maestría", "dep": "Magdalena", "mun": "Santa Marta", "mod": "Virtual", "sector": "Oficial", "recon": "Registro calificado", "precio": 8164100.0, "cred": 48.0, "periodos": 4.0, "snies": 104931, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DEL MAGDALENA - UNIMAGDALENA", "prog": "MAESTRIA EN PRODUCCION AUDIOVISUAL CREATIVA", "nivel": "Maestría", "dep": "Magdalena", "mun": "Santa Marta", "mod": "Virtual", "sector": "Oficial", "recon": "Registro calificado", "precio": 8164100.0, "cred": 40.0, "periodos": 3.0, "snies": 110204, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DEL NORTE", "prog": "MAESTRÍA EN DISEÑO E INNOVACIÓN MD+I", "nivel": "Maestría", "dep": "Atlántico", "mun": "Barranquilla", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 16089840.0, "cred": 45.0, "periodos": 3.0, "snies": 111051, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD DEL VALLE", "prog": "MAESTRIA EN CULTURAS AUDIOVISUALES", "nivel": "Maestría", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": 11037865.0, "cred": 54.0, "periodos": 4.0, "snies": 106746, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD EAFIT-", "prog": "MAESTRÍA EN COMUNICACIÓN TRANSMEDIA", "nivel": "Maestría", "dep": "Antioquia", "mun": "Medellín", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 13885451.0, "cred": 40.0, "periodos": 3.0, "snies": 103484, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD EAN", "prog": "MAESTRÍA EN GERENCIA ESTRATÉGICA DEL DISEÑO", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 52.0, "periodos": 4.0, "snies": 103653, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD EL BOSQUE", "prog": "MAESTRIA EN DISEÑO PARA INDUSTRIAS CREATIVAS Y CULTURALES", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 10336000.0, "cred": 40.0, "periodos": 4.0, "snies": 105762, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD ICESI", "prog": "ESPECIALIZACIÓN EN GESTIÓN DE LA INNOVACIÓN", "nivel": "Especialización", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 13660000.0, "cred": 24.0, "periodos": 2.0, "snies": 117943, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD ICESI", "prog": "MAESTRÍA EN CREACIÓN DE EXPERIENCIAS DIGITALES (UX)", "nivel": "Maestría", "dep": "Valle del Cauca", "mun": "Santiago de Cali", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 12570438.0, "cred": 38.0, "periodos": 3.0, "snies": 116133, "reg": true, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD INDUSTRIAL DE SANTANDER", "prog": "MAESTRÍA EN INNOVACIÓN Y DISEÑO", "nivel": "Maestría", "dep": "Santander", "mun": "Bucaramanga", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": 3189636.0, "cred": 52.0, "periodos": 4.0, "snies": 108315, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD MANUELA BELTRAN-UMB-", "prog": "MAESTRÍA EN TRANSMEDIA", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 13577100.0, "cred": 50.0, "periodos": 4.0, "snies": 105031, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD NACIONAL ABIERTA Y A DISTANCIA UNAD", "prog": "MAESTRÍA EN DISEÑO DE EXPERIENCIA DE USUARIO", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Virtual", "sector": "Oficial", "recon": "Registro calificado", "precio": 8214000.0, "cred": 36.0, "periodos": 3.0, "snies": 109768, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD NACIONAL DE COLOMBIA", "prog": "ESPECIALIZACION EN ANIMACION", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Oficial", "recon": null, "precio": 9011560.0, "cred": 28.0, "periodos": 2.0, "snies": 52972, "reg": false, "dem": {"2020": 17.0, "2021": 22.0, "2022": 14.0, "2023": 18.0, "2024": 22.0}, "uao": false}, {"inst": "UNIVERSIDAD NACIONAL DE COLOMBIA", "prog": "MAESTRÍA EN DISEÑO", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": 12006580.0, "cred": 55.0, "periodos": 4.0, "snies": 103552, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD PEDAGOGICA Y TECNOLOGICA DE COLOMBIA - UPTC", "prog": "MAESTRÍA EN DISEÑO", "nivel": "Maestría", "dep": "Boyacá", "mun": "Duitama", "mod": "Presencial", "sector": "Oficial", "recon": "Registro calificado", "precio": null, "cred": 52.0, "periodos": 4.0, "snies": 106077, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD PONTIFICIA BOLIVARIANA", "prog": "DOCTORADO EN DISEÑO, ARQUITECTURA Y TERRITORIO", "nivel": "Doctorado", "dep": "Antioquia", "mun": "Medellín", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 86.0, "periodos": 8.0, "snies": 108363, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD PONTIFICIA BOLIVARIANA", "prog": "ESPECIALIZACION EN DISEÑO ESTRATEGICO PARA LA INNOVACION", "nivel": "Especialización", "dep": "Antioquia", "mun": "Medellín", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 14789600.0, "cred": 26.0, "periodos": 2.0, "snies": 110814, "reg": false, "dem": {"2020": null, "2021": null, "2022": 1.0, "2023": 10.0, "2024": 12.0}, "uao": false}, {"inst": "UNIVERSIDAD PONTIFICIA BOLIVARIANA", "prog": "MAESTRÍA EN DISEÑO", "nivel": "Maestría", "dep": "Antioquia", "mun": "Medellín", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 8870400.0, "cred": 36.0, "periodos": 3.0, "snies": 117255, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD SANTO TOMAS", "prog": "ESPECIALIZACION EN GERENCIA DE MULTIMEDIA Y COMUNICACION DIGITAL", "nivel": "Especialización", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Presencial", "sector": "Privado", "recon": "Registro calificado", "precio": 5974800.0, "cred": 24.0, "periodos": 2.0, "snies": 110335, "reg": false, "dem": {"2020": null, "2021": null, "2022": 18.0, "2023": 26.0, "2024": 68.0}, "uao": false}, {"inst": "UNIVERSIDAD SANTO TOMAS", "prog": "MAESTRÍA EN COMUNICACIÓN, CULTURAS DIGITALES Y VISUALIZACIÓN DE DATOS", "nivel": "Maestría", "dep": "Bogotá, D.C.", "mun": "Bogotá, D.C.", "mod": "Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": null, "cred": 38.0, "periodos": 3.0, "snies": 116390, "reg": false, "dem": {"2020": null, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}, {"inst": "UNIVERSIDAD SIMÓN BOLÍVAR", "prog": "ESPECIALIZACION EN MULTIMEDIA INTERACTIVA", "nivel": "Especialización", "dep": "Atlántico", "mun": "Barranquilla", "mod": "Presencial-Virtual", "sector": "Privado", "recon": "Registro calificado", "precio": 8403300.0, "cred": 28.0, "periodos": 2.0, "snies": 106308, "reg": false, "dem": {"2020": 6.0, "2021": null, "2022": null, "2023": null, "2024": null}, "uao": false}]};</script>
+<script>
+/* ===================== ENGINE (dos universos) ===================== */
+const REGION_DEPTS=['Valle del Cauca','Cauca','Nariño','Risaralda','Quindío','Caldas'];
+const REGION_NAME='Suroccidente + Eje Cafetero';
+const UAO_PROP={inst:'Universidad Autónoma de Occidente',prog:'Especialización en Diseño de Experiencias Digitales Avanzadas',
+  nivel:'Especialización',dep:'Valle del Cauca',mun:'Santiago de Cali',mod:'Híbrida (Presencial-Virtual)',
+  sector:'Privado',precio:null,cred:24,periodos:2,reg:true,uao:true,propuesta:true,dem:{2020:null,2021:null,2022:null,2023:null,2024:null}};
+const ALL=RAW.nacional.slice();
+const DATA_NAC=ALL;
+const ESP=ALL.filter(r=>r.nivel==='Especialización');
+const BENCH_ALL=ESP.filter(r=>r.reg);
+const BENCH=BENCH_ALL.filter(r=>!r.uao);
+const UAO_EXISTING=BENCH_ALL.filter(r=>r.uao);
+
+const STOP=new Set(('de la el en y a los las del un una para con por su sus al lo como mas más o e ni que se es son especializacion universitaria maestria doctorado programa aplicada aplicado').split(' '));
+function norm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ ]/g,' ').replace(/\s+/g,' ').trim();}
+function toks(s){return norm(s).split(' ').filter(w=>w.length>2&&!STOP.has(w));}
+function ngramsChar(s,n){s=norm(s).replace(/ /g,'');const o=[];for(let i=0;i<=s.length-n;i++)o.push(s.slice(i,i+n));return o;}
+function pct(a,p){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y);const i=(s.length-1)*p,lo=Math.floor(i),hi=Math.ceil(i);return lo===hi?s[lo]:s[lo]+(s[hi]-s[lo])*(i-lo);}
+const median=a=>pct(a,.5),mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+function stdev(a){if(a.length<2)return null;const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/(a.length-1));}
+function outliers(a){if(a.length<4)return[];const q1=pct(a,.25),q3=pct(a,.75),i=q3-q1;return a.filter(v=>v<q1-1.5*i||v>q3+1.5*i);}
+function percentileOf(a,v){if(!a.length||v==null)return null;const n=a.filter(x=>x<v).length,e=a.filter(x=>x===v).length;return Math.round(100*(n+e*.5)/a.length);}
+const COP=v=>v==null?'Sin información':'$'+Math.round(v).toLocaleString('es-CO');
+function grams(list,n){const m=new Map();list.forEach(s=>{const t=toks(s);for(let i=0;i<=t.length-n;i++){const g=t.slice(i,i+n).join(' ');m.set(g,(m.get(g)||0)+1);}});return[...m.entries()].map(([k,v])=>({k,v})).sort((a,b)=>b.v-a.v);}
+const names_nac=DATA_NAC.map(r=>r.prog);
+const KW1=grams(names_nac,1),KW2=grams(names_nac,2),KW3=grams(names_nac,3);
+function buildFamilies(records){const corpus=records.map(r=>r.prog);const freq=grams(corpus,1);
+  const seeds=freq.filter(x=>x.v>=2).slice(0,12).map(x=>x.k);const fams=new Map();
+  records.forEach(r=>{const t=new Set(toks(r.prog));let best=null;for(const s of seeds){if(t.has(s)){best=s;break;}}const key=best||'otros';if(!fams.has(key))fams.set(key,[]);fams.get(key).push(r);});
+  return[...fams.entries()].map(([k,v])=>({fam:k,items:v,n:v.length})).sort((a,b)=>b.n-a.n);}
+const UAO_TOK=new Set(toks(UAO_PROP.prog)),UAO_TRI=new Set(ngramsChar(UAO_PROP.prog,3));
+function jaccard(a,b){let i=0;for(const x of a)if(b.has(x))i++;const u=a.size+b.size-i;return u?i/u:0;}
+function buildTfidf(corpus){const docs=corpus.map(toks);const df=new Map();docs.forEach(d=>new Set(d).forEach(w=>df.set(w,(df.get(w)||0)+1)));
+  const N=docs.length;const idf=w=>Math.log((N+1)/((df.get(w)||0)+1))+1;
+  function vec(tk){const tf=new Map();tk.forEach(w=>tf.set(w,(tf.get(w)||0)+1));const v=new Map();tf.forEach((c,w)=>v.set(w,(c/tk.length)*idf(w)));return v;}
+  function cos(a,b){let d=0,na=0,nb=0;a.forEach((va,w)=>{na+=va*va;if(b.has(w))d+=va*b.get(w);});b.forEach(vb=>nb+=vb*vb);return na&&nb?d/(Math.sqrt(na)*Math.sqrt(nb)):0;}
+  return{vec,cos};}
+function similarityRanking(records){const T=buildTfidf(records.map(r=>r.prog).concat([UAO_PROP.prog]));const uv=T.vec(toks(UAO_PROP.prog));
+  return records.map(r=>{const jt=jaccard(UAO_TOK,new Set(toks(r.prog)));const jn=jaccard(UAO_TRI,new Set(ngramsChar(r.prog,3)));const cs=T.cos(uv,T.vec(toks(r.prog)));
+    const shared=[...UAO_TOK].filter(w=>new Set(toks(r.prog)).has(w));return{...r,jt,jn,cs,comp:.34*jt+.33*cs+.33*jn,shared};}).sort((a,b)=>b.comp-a.comp);}
+const SIM_NAC=similarityRanking(DATA_NAC),SIM_ESP=similarityRanking(ESP),SIM_REG=similarityRanking(ESP.filter(r=>r.reg&&!r.uao));
+function conceptStats(concept,variants){const vs=variants.map(norm);const has=r=>{const n=norm(r.prog);return vs.some(v=>n.includes(v));};
+  const inLevel=lv=>DATA_NAC.filter(r=>r.nivel===lv&&has(r)).length;const tot=DATA_NAC.filter(has).length;
+  return{concept,tot,pct:Math.round(100*tot/DATA_NAC.length),esp:inLevel('Especialización'),mae:inLevel('Maestría'),doc:inLevel('Doctorado')};}
+const CONCEPTS=[conceptStats('Diseño',['diseno']),conceptStats('Experiencia(s)',['experiencia']),conceptStats('Digital(es)',['digital']),conceptStats('Avanzada(s)',['avanzad'])];
+const comboAll=DATA_NAC.filter(r=>{const n=norm(r.prog);return n.includes('diseno')&&n.includes('experiencia')&&n.includes('digital');});
+const comboDE=DATA_NAC.filter(r=>{const n=norm(r.prog);return n.includes('diseno')&&n.includes('experiencia');});
+const maxSim=SIM_NAC[0].comp,meanSim=mean(SIM_NAC.slice(0,10).map(r=>r.comp)),near=SIM_NAC.filter(r=>r.comp>=.35).length;
+const ownLoad=[...UAO_TOK].map(w=>(KW1.find(k=>k.k===w)||{v:0}).v/DATA_NAC.length),avgLoad=mean(ownLoad);
+let DIFF=Math.max(0,Math.min(100,Math.round(100-maxSim*45-avgLoad*110-Math.min(near,8)*3-meanSim*20)));
+</script>
+<script>
+/* ===================== RENDER (estilo referencia) ===================== */
+function esc(s){return (''+s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function title(s){return (s||'').toLowerCase().split(' ').map(w=>w?w.charAt(0).toUpperCase()+w.slice(1):w).join(' ');}
+function barlist(entries,color='slate',opt={}){const max=opt.max||Math.max(...entries.map(e=>e.v),1);
+  return `<div class="barlist">${entries.map(e=>`<div class="barrow${e.uao?' uao':''}"><span class="label" title="${esc(e.label)}">${esc(e.label)}${e.uao?' ★':''}</span><div class="bartrack"><div class="barfill ${e.color||color}" style="width:${Math.max(2,e.v/max*100).toFixed(1)}%"></div></div><span class="num">${e.disp!=null?e.disp:e.v}</span></div>`).join('')}</div>`;}
+function statBlock(arr,fmt,uaoVal){const f=fmt||(v=>v);const s={min:Math.min(...arr),max:Math.max(...arr),mean:mean(arr),median:median(arr),sd:stdev(arr)};
+  let h=`<div>`+[['Mínimo',f(s.min)],['Máximo',f(s.max)],['Promedio',f(s.mean)],['Mediana',f(s.median)],['Desv. estándar',s.sd!=null?f(s.sd):'—'],['n (excluye UAO)',arr.length]].map(([k,v])=>`<div class="statline"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+  if(uaoVal!=null){const p=percentileOf(arr,uaoVal);h+=`<div class="statline uao"><span class="k">UAO (propuesta)</span><span class="v">${f(uaoVal)} · P${p}</span></div>`;}
+  return h+`</div>`;}
+function kpi(cls,lbl,val,foot){return `<div class="card kpi ${cls}"><div class="lbl">${lbl}</div><div class="val">${val}</div><div class="foot">${foot||''}</div></div>`;}
+function insight(kind,ico,html){return `<div class="insight ${kind}"><div class="ico">${ico}</div><div class="content">${html}</div></div>`;}
+function head(letter,tag,tagcls,ttl,q){return `<div class="section-head"><div class="section-tag ${tagcls}">${tag}</div><div class="section-title">${letter} · ${ttl}</div><div class="section-q">${q}</div></div>`;}
+const objToEntries=(o,uaoLabel)=>o.map(x=>({label:x.label,v:x.value,uao:uaoLabel&&x.label===uaoLabel}));
+
+/* precompute */
+const credC=BENCH.map(r=>r.cred).filter(v=>v!=null),durC=BENCH.map(r=>r.periodos).filter(v=>v!=null),priceC=BENCH.map(r=>r.precio).filter(v=>v!=null);
+function dist(recs,key){const m=new Map();recs.forEach(r=>{const k=r[key]||'n/d';m.set(k,(m.get(k)||0)+1);});return[...m.entries()].map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value);}
+const modDist=dist(BENCH,'mod'),secDist=dist(BENCH,'sector'),geoDist=dist(BENCH,'dep'),nivDist=dist(DATA_NAC,'nivel'),depNac=dist(DATA_NAC,'dep');
+const credPctUAO=percentileOf(credC,UAO_PROP.cred),durPctUAO=percentileOf(durC,UAO_PROP.periodos);
+const regRecords=ESP.filter(r=>r.reg).concat([UAO_PROP]);
+const REGFAM=buildFamilies(regRecords).map(f=>{const d=f.items.map(x=>x.dem?x.dem[2024]:null).filter(v=>v!=null&&v>0);return{...f,dem:d.length?mean(d):null};});
+const FAMNAC=buildFamilies(DATA_NAC);
+
+const P=[];
+
+/* A · Resumen */
+P.push(`<section id="s-exec">${head('A','Síntesis','syn','Resumen Ejecutivo','Posición general de la denominación propuesta frente al mercado — dos universos de datos independientes.')}
+<div class="grid grid-4">
+${kpi('c-blue','Especializ. regionales',BENCH_ALL.length,`${REGION_DEPTS.length} deptos · ${BENCH.length} competidoras`)}
+${kpi('c-blue','Créditos (mediana reg.)',median(credC),`UAO ${UAO_PROP.cred} · P${credPctUAO}`)}
+${kpi('c-blue','Duración (mediana reg.)',median(durC)+' sem',`UAO ${UAO_PROP.periodos} semestres`)}
+${kpi('c-gold','Índice diferenciación',DIFF+'/100',DIFF>=66?'Alta':DIFF>=40?'Media':'Baja')}
+</div>
+<div class="grid grid-4" style="margin-top:16px">
+${kpi('c-gold','Oferta nacional (denom.)',DATA_NAC.length,nivDist.map(n=>n.value+' '+n.label.toLowerCase()+'s').join(' · '))}
+${kpi('c-gold','Similitud máx. del nombre',(SIM_NAC[0].comp*100).toFixed(0)+'%','vs. programa casi homónimo')}
+${kpi('c-purple','Competidores cercanos',near,'Similitud combinada ≥ 35%')}
+${kpi('c-good','Modalidad UAO','Híbrida',`Poco frecuente en la región`)}
+</div>
+<div class="card" style="margin-top:16px"><h3 class="h">Hallazgos prioritarios</h3>
+${insight('blue','🧭',`<p><b>Dos universos, sin mezcla.</b> La <b>denominación</b> se analiza sobre ${DATA_NAC.length} programas nacionales (${nivDist.map(n=>n.value+' '+n.label.toLowerCase()+'s').join(', ')}); el <b>benchmark cuantitativo</b> usa solo las ${BENCH_ALL.length} especializaciones de ${REGION_NAME}. Ningún indicador cruza ambas poblaciones.</p>`)}
+${insight('wine','⚠️',`<p><b>Riesgo de nombre.</b> Ya existe una <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}, ${SIM_NAC[0].dep}) con <b>${(SIM_NAC[0].comp*100).toFixed(0)}%</b> de similitud combinada; la propuesta se distingue esencialmente por el calificador "Avanzadas".</p>`)}
+${insight('good','🌱',`<p><b>Segmento poco saturado.</b> Solo ${BENCH.length} especializaciones competidoras en la región, concentradas en ${geoDist[0]?.label}. Cauca, Nariño y Risaralda no registran oferta directa del campo.</p>`)}
+${insight('gold','📉',`<p><b>Datos financieros y de demanda escasos.</b> Solo ${priceC.length} de ${BENCH.length} competidoras publican precio y ninguna reporta matrícula: el posicionamiento por precio/demanda no es concluyente. No se imputan valores (N/A ≠ 0).</p>`)}
+</div></section>`);
+
+/* B · Programa UAO */
+function rankingRows(){return DATA_NAC.concat([UAO_PROP]).map(r=>({inst:r.inst,prog:r.prog,niv:r.nivel,mod:r.mod||'—',cred:r.cred,dur:r.periodos,precio:r.precio,
+  d24:r.dem?r.dem[2024]:null,dep:r.dep||'—',reg:r.reg,uao:!!r.uao,prop:!!r.propuesta}));}
+const RR=rankingRows();
+function rankTable(){return `<div class="table-scroll"><table id="rank"><thead><tr>
+<th data-k="inst">Institución</th><th data-k="prog">Programa</th><th data-k="niv">Nivel</th><th data-k="mod">Modalidad</th>
+<th data-k="cred">Créd.</th><th data-k="dur">Dur.</th><th data-k="precio">Precio</th><th data-k="d24">Dem. 2024</th><th data-k="dep">Depto.</th></tr></thead>
+<tbody>${RR.map(r=>`<tr class="${r.uao?'uao-row':''}"><td>${esc(title(r.inst))}${r.prop?' <span class="badge badge-wine">Propuesto UAO</span>':(r.uao?' <span class="badge badge-gold">UAO actual</span>':'')}</td><td>${esc(title(r.prog))}</td><td>${r.niv}</td><td>${r.mod}</td><td>${r.cred??'—'}</td><td>${r.dur??'—'}</td><td>${r.precio!=null?COP(r.precio):'<span class="na">s/i</span>'}</td><td>${r.d24!=null?r.d24:'<span class="na">—</span>'}</td><td>${r.dep}</td></tr>`).join('')}</tbody></table></div>`;}
+P.push(`<section id="s-uao">${head('B','Referencia','ben','Programa UAO','El programa propuesto se mantiene visible como referencia, pero se excluye de todos los cálculos estadísticos (FLAG_PROGRAMA).')}
+<div class="card"><h3 class="h">Ranking de programas afines</h3>${rankTable()}
+<p class="note">Denominación = universo nacional (todos los niveles). El programa UAO propuesto proviene de la ficha del Comité Curricular y no está registrado en SNIES; la UAO actual es el referente interno del campo.</p></div>
+<div class="card" style="margin-top:16px"><h3 class="h">Caracterización UAO vs. especializaciones regionales</h3>
+<table><thead><tr><th>Atributo</th><th>UAO (propuesto)</th><th>Mediana regional</th><th>Promedio regional</th><th>Posición</th></tr></thead><tbody>
+<tr class="uao-row"><td>Créditos</td><td>${UAO_PROP.cred}</td><td>${median(credC)}</td><td>${mean(credC)?.toFixed(1)}</td><td>Percentil ${credPctUAO}</td></tr>
+<tr class="uao-row"><td>Duración (sem.)</td><td>${UAO_PROP.periodos}</td><td>${median(durC)}</td><td>${mean(durC)?.toFixed(1)}</td><td>Percentil ${durPctUAO}</td></tr>
+<tr class="uao-row"><td>Modalidad</td><td>Híbrida</td><td colspan="2">${modDist.map(m=>m.label+' ('+m.value+')').join(', ')}</td><td>Diferenciada</td></tr>
+<tr class="uao-row"><td>Precio semestre</td><td class="na">s/i</td><td>${priceC.length?COP(median(priceC)):'n/d'}</td><td>${priceC.length?COP(mean(priceC)):'n/d'}</td><td class="na">no posicionable</td></tr>
+</tbody></table></div>
+${UAO_EXISTING.length?`<div class="card" style="margin-top:16px"><h3 class="h">Referente interno UAO (oferta actual)</h3>
+${insight('gold','🏫',`<p><b>${title(UAO_EXISTING[0].prog)}</b> — ${UAO_EXISTING[0].mod}, ${UAO_EXISTING[0].cred} créditos, ${COP(UAO_EXISTING[0].precio)}${UAO_EXISTING[0].dem&&UAO_EXISTING[0].dem[2024]?', '+UAO_EXISTING[0].dem[2024]+' matriculados en 2024':''}. Se muestra por contexto; no entra en las estadísticas de competencia.</p>`)}</div>`:''}
+</section>`);
+
+/* C · Benchmark Regional */
+P.push(`<section id="s-bench">${head('C','Benchmark numérico · Regional','ben','Benchmark Regional','Universo exclusivo: especializaciones de Valle del Cauca, Cauca, Nariño, Risaralda, Quindío y Caldas. Maestrías y doctorados no entran en ningún cálculo.')}
+${insight('wine','⚠️',`<p><b>Advertencia de tamaño muestral.</b> El segmento regional de especializaciones del campo es muy pequeño: <b>${BENCH_ALL.length} programas</b> (${BENCH.length} externos a la UAO), presentes solo en ${new Set(BENCH.map(r=>r.dep)).size} de los 6 departamentos. Medianas y percentiles son indicativos. La escasez es, en sí misma, un hallazgo: <b>baja saturación regional</b>.</p>`)}
+<div class="grid grid-2">
+<div class="card"><h3 class="h">Distribución por modalidad</h3>${barlist(objToEntries(modDist),'wine')}<div class="legend"><span><span class="dot" style="background:var(--accent)"></span>UAO propone modalidad híbrida</span></div></div>
+<div class="card"><h3 class="h">Distribución por sector</h3>${barlist(objToEntries(secDist),'gold')}</div>
+</div>
+<div class="grid grid-2" style="margin-top:16px">
+<div class="card"><h3 class="h">Distribución geográfica</h3>${barlist(objToEntries(geoDist),'slate')}
+${insight('blue','📍',`<p>Concentración en <b>${geoDist[0]?.label}</b> (${geoDist[0]?.value}/${BENCH.length}). Cauca, Nariño y Risaralda no registran especializaciones del campo → territorios sin competencia directa.</p>`)}</div>
+<div class="card"><h3 class="h">Duración (semestres)</h3>${statBlock(durC,v=>v==null?'—':(Number.isInteger(v)?v:v.toFixed(1)),UAO_PROP.periodos)}
+<p class="note">Estándar absoluto del segmento: 2 semestres. No diferencia ni penaliza.</p></div>
+</div>
+<div class="grid grid-3" style="margin-top:16px">
+<div class="card"><h3 class="h">Créditos — estadísticos</h3>${statBlock(credC,v=>v==null?'—':(Number.isInteger(v)?v:v.toFixed(1)),UAO_PROP.cred)}${outliers(credC).length?`<p class="note">Outliers (1.5·IQR): ${outliers(credC).join(', ')}.</p>`:'<p class="note">Sin outliers (1.5·IQR).</p>'}</div>
+<div class="card"><h3 class="h">Precio semestral (COP)</h3>${priceC.length?statBlock(priceC,COP):'<p class="small">Sin datos suficientes.</p>'}
+${insight('wine','💸',`<p><b>Dato insuficiente.</b> Solo ${priceC.length} de ${BENCH.length} competidoras publican precio, y la UAO no reporta precio para la propuesta. No se calculan percentiles de precio; conviene relevar tarifas directamente.</p>`)}</div>
+<div class="card"><h3 class="h">Posición UAO — resumen</h3>
+<div class="statline uao"><span class="k">Créditos</span><span class="v">P${credPctUAO}</span></div>
+<div class="statline uao"><span class="k">Duración</span><span class="v">P${durPctUAO}</span></div>
+<div class="statline"><span class="k">Modalidad híbrida</span><span class="v">${modDist.find(m=>/brid/i.test(m.label))?'Presente':'Rara/ausente'}</span></div>
+<div class="statline"><span class="k">Precio</span><span class="v na">no posicionable</span></div></div>
+</div></section>`);
+
+/* D · Demanda */
+const demByYear=[2020,2021,2022,2023,2024].map(y=>({y,vals:BENCH_ALL.map(r=>r.dem?r.dem[y]:null).filter(v=>v!=null&&v>0)}));
+P.push(`<section id="s-demanda">${head('D','Benchmark numérico · Regional','ben','Demanda','Matrícula histórica 2020–2024, exclusivamente sobre especializaciones regionales.')}
+${insight('wine','⚠️',`<p><b>Demanda no evidenciable para el segmento externo.</b> Ninguna de las ${BENCH.length} especializaciones competidoras reporta matrícula en la base. El único registro del campo en la región es la <b>oferta actual de la UAO</b> (${UAO_EXISTING[0]&&UAO_EXISTING[0].dem[2024]?UAO_EXISTING[0].dem[2024]:'44'} matriculados en 2024). No se construyen series ni promedios regionales de demanda; se indica explícitamente en lugar de imputar (reglas 7, 8 y 10).</p>`)}
+<div class="card"><h3 class="h">Cobertura del dato de demanda</h3>
+<table><thead><tr><th>Año</th><th>Programas con demanda reportada</th><th>Demanda total</th></tr></thead><tbody>
+${demByYear.map(d=>`<tr><td>${d.y}</td><td>${d.vals.length} de ${BENCH_ALL.length}</td><td>${d.vals.length?d.vals.reduce((a,b)=>a+b,0):'<span class="na">n/d</span>'}</td></tr>`).join('')}
+</tbody></table>
+${insight('slate','🔎',`<p>Para dimensionar demanda real conviene cruzar con inscritos/aspirantes internos de la UAO y con programas afines de mayor nivel, sin mezclarlos en el benchmark de especializaciones.</p>`)}</div></section>`);
+
+/* E · Saturación */
+P.push(`<section id="s-satur">${head('E','Benchmark numérico · Regional','ben','Saturación · Demanda vs. Oferta','Familias detectadas dentro de las especializaciones regionales, ordenadas por número de programas (oferta).')}
+<div class="card"><h3 class="h">Programas por familia (regional)</h3>
+${barlist(REGFAM.map((f,i)=>({label:title(f.fam)+(f.dem!=null?' · dem. '+Math.round(f.dem):' · dem. n/d'),v:f.n,uao:UAO_TOK.has(f.fam)})),'wine')}
+${insight('gold','🧩',`<p>Casi todas las familias tienen 1–2 programas → <b>segmento poco saturado</b>. El clúster de <b>animación digital</b> es el más poblado; <b>diseño de experiencias</b> (donde se ubicaría la UAO) tiene oferta mínima. La demanda regional es prácticamente inexistente, por lo que la lectura sólida es la de <b>oferta</b>.</p>`)}</div></section>`);
+
+/* F · Oferta Nacional */
+P.push(`<section id="s-nac">${head('F','Denominación · Nacional','den','Oferta Nacional','Universo semántico completo: especializaciones, maestrías y doctorados de todo el país. Sirve para leer cómo se nombra el campo, no para comparar cifras.')}
+<div class="grid grid-2">
+<div class="card"><h3 class="h">Composición por nivel</h3>${barlist(objToEntries(nivDist),'wine')}</div>
+<div class="card"><h3 class="h">Distribución territorial</h3>${barlist(objToEntries(depNac).slice(0,8),'gold')}
+${insight('blue','🗺️',`<p><b>${depNac[0].label}</b> concentra ${Math.round(100*depNac[0].value/DATA_NAC.length)}% de la oferta; el ${REGION_NAME} es mercado secundario, lo que refuerza el espacio regional para la UAO.</p>`)}</div>
+</div></section>`);
+
+/* G · Descomposición */
+P.push(`<section id="s-denom">${head('G','Denominación · Nacional','den','Descomposición de la Denominación','¿Qué tan común, emergente o diferenciador es cada concepto de "Diseño · Experiencias · Digitales · Avanzadas"?')}
+<div class="card"><h3 class="h">Concepto por nivel académico</h3>
+<table><thead><tr><th>Concepto</th><th>Programas</th><th>% oferta</th><th>Especializ.</th><th>Maestría</th><th>Doctorado</th><th>Lectura</th></tr></thead><tbody>
+${CONCEPTS.map(c=>{const b=c.pct>=25?'<span class="badge badge-warn">Frecuente</span>':c.pct>=8?'<span class="badge badge-slate">Común</span>':'<span class="badge badge-good">Diferenciador</span>';return `<tr><td><b>${c.concept}</b></td><td>${c.tot}</td><td>${c.pct}%</td><td>${c.esp}</td><td>${c.mae}</td><td>${c.doc}</td><td>${b}</td></tr>`;}).join('')}
+</tbody></table></div>
+<div class="grid grid-2" style="margin-top:16px">
+<div class="card"><h3 class="h">Combinación "Diseño + Experiencias + Digitales"</h3>
+${barlist([{label:'Usan "Diseño" + "Experiencia(s)"',v:comboDE.length},{label:'Usan los tres conceptos',v:comboAll.length,color:'wine'}],'slate',{max:Math.max(comboDE.length,comboAll.length,1)})}
+${insight(comboAll.length<=1?'good':'wine',comboAll.length<=1?'🌱':'⚠️',`<p>${comboAll.length<=1?'La combinación exacta es <b>emergente/rara</b>: casi no hay competencia con esa fórmula precisa.':'La combinación exacta ya aparece en el mercado: no es totalmente inédita.'}</p>`)}</div>
+<div class="card"><h3 class="h">Análisis del término "Avanzadas"</h3>
+<div class="kpi c-gold" style="text-align:left;border-top:none;padding:0"><div class="val" style="font-size:40px">${CONCEPTS[3].tot}</div><div class="foot">programas en toda la oferta nacional usan "avanzad*"</div></div>
+${insight('gold','🏷️',`<p><b>Función descriptiva, no diferenciadora.</b> "Avanzadas" casi no se usa como calificador (${CONCEPTS[3].tot}/${DATA_NAC.length}). Aporta promesa de nivel, pero no crea categoría ni ancla búsqueda: su valor es de <b>posicionamiento percibido</b>.</p>`)}</div>
+</div></section>`);
+
+/* H · Palabras Clave */
+const cloud=KW1.slice(0,32),cmax=cloud[0].v,cmin=cloud[cloud.length-1].v;
+P.push(`<section id="s-kw">${head('H','Denominación · Nacional','den','Palabras Clave','Extracción dinámica sobre las denominaciones nacionales: limpieza, normalización y stopwords. En vino, términos de la denominación UAO.')}
+<div class="card"><h3 class="h">Nube de conceptos dominantes</h3>
+<div class="cloud">${cloud.map(w=>{const sz=(12.5+11.5*(w.v-cmin)/((cmax-cmin)||1)).toFixed(1);return `<span class="${UAO_TOK.has(w.k)?'uao':''}" style="font-size:${sz}px">${esc(w.k)}</span>`;}).join('')}</div></div>
+<div class="grid grid-3" style="margin-top:16px">
+<div class="card"><h3 class="h">Top palabras</h3>${barlist(KW1.slice(0,10).map(w=>({label:w.k,v:w.v,uao:UAO_TOK.has(w.k),color:UAO_TOK.has(w.k)?'wine':'slate'})),'slate')}</div>
+<div class="card"><h3 class="h">Top bigramas</h3>${barlist(KW2.slice(0,10).map(w=>({label:w.k,v:w.v})),'gold')}</div>
+<div class="card"><h3 class="h">Top trigramas</h3>${barlist(KW3.slice(0,10).map(w=>({label:w.k,v:w.v})),'slate')}</div>
+</div></section>`);
+
+/* I · Familias */
+P.push(`<section id="s-fam">${head('I','Denominación · Nacional','den','Familias Semánticas','Agrupaciones detectadas automáticamente a partir de los términos ancla más frecuentes del corpus (no impuestas).')}
+<div class="card"><h3 class="h">Familias léxicas del campo (nacional)</h3>
+${barlist(FAMNAC.slice(0,10).map(f=>({label:title(f.fam)+(UAO_TOK.has(f.fam)?' (término UAO)':''),v:f.n,uao:UAO_TOK.has(f.fam),color:UAO_TOK.has(f.fam)?'wine':'slate'})),'slate')}
+<p class="note">Familias construidas por término distintivo dominante (≥2 programas comparten el término), sin listas manuales.</p>
+${insight('blue','🧬',`<p>El mercado gravita hacia <b>${title(FAMNAC[0].fam)}</b> y ${title(FAMNAC[1].fam)}. La denominación UAO se apoya en <b>${[...UAO_TOK].filter(t=>FAMNAC.find(f=>f.fam===t)).map(title).join(', ')||'conceptos transversales'}</b>: familias reconocibles pero no saturadas por una sola fórmula.</p>`)}</div></section>`);
+
+/* J · Similitud */
+function simTable(rows,regional){return `<div class="table-scroll"><table><thead><tr><th>#</th><th>Programa</th><th>Institución</th><th>${regional?'Depto.':'Nivel'}</th><th>Jaccard</th><th>TF-IDF</th><th>N-gram</th><th>Combinada</th><th>Coincidencias</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(title(r.prog))}</b></td><td>${esc(title(r.inst))}</td><td>${regional?esc(r.dep||''):r.nivel}</td><td>${(r.jt*100).toFixed(0)}%</td><td>${(r.cs*100).toFixed(0)}%</td><td>${(r.jn*100).toFixed(0)}%</td><td><b>${(r.comp*100).toFixed(0)}%</b></td><td style="color:#92400e">${r.shared.map(esc).join(', ')||'—'}</td></tr>`).join('')}</tbody></table></div>`;}
+P.push(`<section id="s-sim">${head('J','Denominación · Nacional','den','Similitud de la Denominación','"${esc(UAO_PROP.prog)}" comparada mediante Jaccard (tokens), coseno TF-IDF y n-gramas de caracteres. La combinada promedia las tres.')}
+${insight(SIM_NAC[0].comp>=.5?'wine':'blue','🎯',`<p><b>Hallazgo central.</b> El programa más parecido a nivel nacional es <b>${title(SIM_NAC[0].prog)}</b> (${title(SIM_NAC[0].inst)}, ${SIM_NAC[0].dep}) con <b>${(SIM_NAC[0].comp*100).toFixed(0)}%</b> de similitud combinada. ${SIM_NAC[0].shared.length>=3?'Comparte casi todo el núcleo conceptual ("'+SIM_NAC[0].shared.join('", "')+'"); la propuesta se distingue por "Avanzadas".':''}</p>`)}
+<div class="card"><h3 class="h">Ranking nacional de similitud (Top 12)</h3><p class="small" style="margin-bottom:10px">Incluye especializaciones, maestrías y doctorados.</p>${simTable(SIM_NAC.slice(0,12))}</div>
+<div class="card" style="margin-top:16px"><h3 class="h">Ranking específico entre especializaciones (Top 10)</h3>${simTable(SIM_ESP.slice(0,10))}</div>
+<div class="card" style="margin-top:16px"><h3 class="h">Similitud dentro del ${REGION_NAME}</h3><p class="small" style="margin-bottom:10px">Solo especializaciones de los 6 departamentos (excl. UAO).</p>${simTable(SIM_REG.slice(0,8),true)}</div>
+</section>`);
+
+/* K · Oportunidades */
+const lowSat=FAMNAC.filter(f=>f.n<=2&&f.fam!=='otros').slice(0,6);
+P.push(`<section id="s-oport">${head('K','Síntesis','syn','Oportunidades Estratégicas','Detectadas automáticamente a partir de baja oferta, familias emergentes y conceptos poco utilizados.')}
+<div class="card">
+${insight('good','🎯',`<p><b>Nichos territoriales.</b> Cauca, Nariño y Risaralda no registran especializaciones del campo → mercados abiertos, especialmente para modalidad híbrida. Fuera de ${geoDist[0]?.label}, la oferta regional es casi nula.</p>`)}
+${insight('gold','🧩',`<p><b>Familias poco saturadas.</b> ${lowSat.map(f=>title(f.fam)).join(', ')} — conceptos con ≤2 programas nacionales.</p>`)}
+${insight('blue','🏷️',`<p><b>Diferenciadores disponibles.</b> "Avanzadas" casi no se usa (${CONCEPTS[3].tot}/${DATA_NAC.length}); la fórmula "Diseño de Experiencias Digitales" tiene solo ${comboAll.length} ocurrencia(s) nacional(es). Anclar "experiencias" a un vertical (inmersivas, de servicio, de producto) o sumar un término emergente (IA, inmersivo) eleva la diferenciación sin perder claridad.</p>`)}
+</div></section>`);
+
+/* L · Diagnóstico */
+const reco=SIM_NAC[0].comp>=.55?['Mantener con ajustes menores',`El núcleo conceptual es adecuado y regionalmente poco saturado, pero existe un programa nacional casi homónimo ("${title(SIM_NAC[0].prog)}"). Se recomienda ajustar el calificador para elevar la diferenciación —anclando "experiencias" a un vertical o sumando un término emergente— conservando la claridad de mercado.`]
+  :DIFF>=60?['Mantener denominación','La denominación es clara y suficientemente diferenciada; el segmento regional está poco saturado.']
+  :['Revisar denominación','La similitud con la oferta existente es alta; conviene reforzar el elemento distintivo antes de registrar.'];
+P.push(`<section id="s-diag">${head('L','Síntesis','syn','Diagnóstico Ejecutivo','Fortalezas, debilidades, oportunidades y riesgos, con recomendación sustentada.')}
+<div class="diag-grid">
+<div class="diag-box diag-f"><h4>Fortalezas</h4><ul>
+<li>Segmento regional de especialización <b>poco saturado</b> (${BENCH.length} competidoras).</li>
+<li>Créditos (${UAO_PROP.cred}) y duración (${UAO_PROP.periodos} sem.) <b>alineados</b> con el estándar regional.</li>
+<li>Modalidad <b>híbrida</b>: pocos competidores la ofrecen; amplía cobertura territorial.</li>
+<li>Núcleo conceptual reconocible y buscado ("diseño", "experiencias", "digitales").</li></ul></div>
+<div class="diag-box diag-d"><h4>Debilidades</h4><ul>
+<li>Denominación casi idéntica ya existente (${(SIM_NAC[0].comp*100).toFixed(0)}% de similitud).</li>
+<li>"Avanzadas" <b>no diferencia</b> semánticamente; funciona como descriptor.</li>
+<li>Sin dato de precio propio ni de la mayoría de competidoras.</li></ul></div>
+<div class="diag-box diag-o"><h4>Oportunidades</h4><ul>
+<li>Departamentos <b>sin competencia</b> directa (Cauca, Nariño, Risaralda).</li>
+<li>Fórmula "Diseño de Experiencias Digitales" aún <b>emergente</b> (${comboAll.length} ocurrencia nacional).</li>
+<li>Espacio para <b>anclar un vertical</b> (inmersivo, servicio, producto, IA).</li></ul></div>
+<div class="diag-box diag-r"><h4>Riesgos</h4><ul>
+<li><b>Confusión de marca</b> con el programa casi homónimo.</li>
+<li>Familia de <b>animación digital</b> más poblada: podría opacar en búsquedas genéricas.</li>
+<li>Demanda regional <b>no evidenciable</b> con los datos actuales.</li></ul></div>
+</div>
+<div class="reco"><div class="rl">Recomendación al Comité Curricular</div><div class="rv">${reco[0]}</div><div class="rd">${reco[1]}</div></div>
+</section>`);
+
+/* M · Conclusiones */
+const QA=[
+['¿Qué tan diferenciada es la denominación a nivel nacional?',`Diferenciación <b>media</b> (índice ${DIFF}/100): núcleo común, fórmula completa poco frecuente.`],
+['¿Y frente a especializaciones?',`La especialización más parecida alcanza ${(SIM_ESP[0].comp*100).toFixed(0)}% de similitud combinada.`],
+['¿Y dentro del Suroccidente + Eje Cafetero?',`Alta a nivel de nombre (${(SIM_REG[0]?SIM_REG[0].comp*100:0).toFixed(0)}% la más cercana), pero con baja saturación de oferta.`],
+['¿Qué conceptos están saturados?',`"${title(FAMNAC[0].fam)}" y "${title(FAMNAC[1].fam)}" concentran la oferta; "digital" es transversal.`],
+['¿Qué conceptos son oportunidad?',`"Experiencias" ancladas a un vertical y calificadores emergentes; "avanzadas" queda libre pero aporta poco.`],
+['¿Quiénes son los principales referentes?',`${SIM_NAC.slice(0,3).map(r=>title(r.inst)).join(', ')}.`],
+['¿Qué tan competitiva es la oferta regional?',`Poco densa: ${BENCH.length} especializaciones externas, concentradas en ${geoDist[0]?.label}.`],
+['¿Existe espacio para la propuesta UAO?',`Sí, por modalidad híbrida y por departamentos sin competencia directa.`],
+['¿Cuál es el principal riesgo?',`La colisión de nombre con "${title(SIM_NAC[0].prog)}" (${title(SIM_NAC[0].inst)}).`],
+['¿Cuál es la recomendación final?',`<b>${reco[0]}</b>.`]];
+P.push(`<section id="s-concl">${head('M','Síntesis','syn','Conclusiones','Síntesis ejecutiva dirigida al Comité Curricular.')}
+<div class="card concl">${QA.map((q,i)=>`<div class="ci"><div class="n">${i+1}</div><div><div class="qx">${q[0]}</div><div class="ax">${q[1]}</div></div></div>`).join('')}</div></section>`);
+
+document.getElementById('wrap').innerHTML=P.join('');
+document.getElementById('hero-meta').innerHTML=[
+  ['Universidad Autónoma de Occidente','Institución'],['Santiago de Cali · Valle del Cauca','Sede de oferta'],
+  [DATA_NAC.length+' programas','Oferta nacional afín'],['Híbrida · 2 sem · 24 créditos','Programa propuesto']
+].map(m=>`<div><b>${m[0]}</b>${m[1]}</div>`).join('');
+document.getElementById('foot-nac').textContent=DATA_NAC.length;
+document.getElementById('foot-ben').textContent=BENCH.length;
+
+/* sortable ranking */
+(function(){const t=document.getElementById('rank');if(!t)return;let cur={k:'cred',dir:-1};
+  t.querySelectorAll('th').forEach(th=>{th.addEventListener('click',()=>{const k=th.dataset.k;cur.dir=cur.k===k?-cur.dir:-1;cur.k=k;
+    t.querySelectorAll('th').forEach(x=>x.classList.remove('sorted','asc'));th.classList.add('sorted');if(cur.dir===1)th.classList.add('asc');
+    const tb=t.tBodies[0];[...tb.rows].sort((a,b)=>{const ci=[...th.parentNode.children].indexOf(th);let x=a.cells[ci].innerText.trim(),y=b.cells[ci].innerText.trim();
+      const nx=parseFloat(x.replace(/[^0-9.\-]/g,'')),ny=parseFloat(y.replace(/[^0-9.\-]/g,''));if(!isNaN(nx)&&!isNaN(ny))return (nx-ny)*cur.dir;return x.localeCompare(y,'es')*cur.dir;}).forEach(r=>tb.appendChild(r));});});})();
+
+/* scrollspy */
+const links=[...document.querySelectorAll('.sidenav a')],secs=[...document.querySelectorAll('section')];
+function spy(){let cur=secs[0].id;const y=window.scrollY+80;secs.forEach(s=>{if(s.offsetTop<=y)cur=s.id;});links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));}
+window.addEventListener('scroll',spy,{passive:true});spy();
+</script>
+</body>
+</html>
